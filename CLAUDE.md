@@ -66,6 +66,12 @@ Other pages can be simple placeholders at first.
 - Optimize for easy iteration, not long-term architecture
 - Do not over-engineer
 
+## Figma Reading Rules — MANDATORY
+- NEVER use screenshots to extract design values
+- ALWAYS use get_design_context or get_variable_defs MCP calls
+- Before building ANY component, print extracted values first
+- If MCP call fails, ask user for the node-id — do NOT fallback to screenshot
+
 ## Design System — Figma-first
 
 > **Highest priority: match Figma.** shadcn/ui is a base component layer, not the source of truth for styles.
@@ -144,6 +150,28 @@ README.md              # Project introduction
 - No separate CSS files — use Tailwind + CSS variables in `globals.css`
 - Mock data in `src/mock-data/` as TypeScript files with full types
 
+### Token & Tailwind Usage Rules — MANDATORY
+
+**Spacing** — NEVER use `p-[Npx]` / `gap-[Npx]` / `m-[Npx]` when a Tailwind class exists:
+  2px→0.5 · 4px→1 · 6px→1.5 · 8px→2 · 10px→2.5 · 12px→3 · 14px→3.5 · 16px→4
+  20px→5 · 24px→6 · 28px→7 · 32px→8 · 48px→12 · 56px→14 · 60px→15 · 64px→16
+  Special: 1px→px · negative -4px → -1
+
+**Colors** — NEVER use raw `#hex` or `rgba()` when a token exists:
+  #f9f9fa → text-wm-text-01 / bg-wm-bg-inv
+  #0a0a0b → bg-wm-bg-01 / text-wm-text-inv / border-wm-bg-01
+  #7a7a83 → text-wm-text-03
+  rgba(255,255,255,0.05) → bg-wm-overlay-5 (or `var(--wm-overlay-5)` in inline styles)
+  rgba(22,194,132,0.20) → bg-wm-bg-primary-20 (or `var(--wm-bg-primary-muted-20)` in inline ternary)
+
+**Typography** — NEVER use `text-[Npx] leading-[Npx]` when a utility exists:
+  12/16 Medium → text-label-xs · 12/16 Regular → text-body-xs
+  14/20 Medium → text-label-sm · 14/20 Regular → text-body-sm
+  16/24 Medium → text-label-md · 18/28 → text-label-lg / text-body-lg
+
+**Inline styles** — NEVER put padding/margin in `style={{}}`, always use Tailwind classes.
+  Exception: dynamic `style` for conditional colors (ternary) is OK, but values must use `var(--wm-*)` not raw hex.
+
 ## Development Commands
 
 ```bash
@@ -153,10 +181,13 @@ npm run build    # Production build
 
 ## Key Notes for Claude
 
-- **Figma-first**: When implementing any component, get the Figma spec first. Never assume spacing/color/radius.
-- **shadcn/ui = base, not final**: Install the shadcn component, then override styles to match Figma. Do not keep the default look.
-- **Keep it adjustable**: Code must be easy to tweak. Use CSS variables for colors/spacing instead of hardcoding. Extract magic numbers into constants.
-- **Typed mock data**: All mock data must have TypeScript interfaces/types. Place types in the same file or in `src/types/`.
-- **No backend**: All data is mocked. Do not set up a server or use fetch/axios for real API calls.
-- **Score-aware**: AI usage is 30pts — the highest weight. Always prefer demonstrable, iterative AI-assisted work.
+- **Figma-first**: Get Figma spec via MCP before implementing anything. Never assume spacing/color/radius.
+- **No screenshots**: Always use `get_design_context` — never rely on visual estimation from screenshots.
+- **Tailwind v4**: No `tailwind.config.ts`. All tokens in `@theme` block in `globals.css`.
+- **No arbitrary values**: If a token doesn't exist, add it to `globals.css` first.
+- **shadcn/ui = base, not final**: Override all styles to match Figma.
+- **Keep it adjustable**: Use CSS variables for colors/spacing. Extract magic numbers into tokens.
+- **Typed mock data**: All mock data must have TypeScript interfaces. Place in `src/mock-data/`.
+- **No backend**: All data is mocked. No fetch/axios for real API calls.
+- **Score-aware**: AI usage is 30pts. Always prefer demonstrable, iterative workflow over one-shot generation.
 - Always use TypeScript — no plain JavaScript.
