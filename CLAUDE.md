@@ -191,3 +191,45 @@ npm run build    # Production build
 - **No backend**: All data is mocked. No fetch/axios for real API calls.
 - **Score-aware**: AI usage is 30pts. Always prefer demonstrable, iterative workflow over one-shot generation.
 - Always use TypeScript — no plain JavaScript.
+
+---
+
+## Current Status (updated 2026-02-25)
+
+### ✅ Completed — Anchor Page (PremarketPage `/`)
+6 sections fully built, animated, interactive:
+1. **HeroSection** — headline + CTA + decorative coins/trade panel + play button → video modal (uses `createPortal` to escape `page-fade-in` transform)
+2. **StatsSection** — slot-machine digit reel animation (IntersectionObserver trigger) + real-time simulation via `useSimulatedStats` hook (re-triggers animation on value change with `key={raw}`)
+3. **MarketTodaySection** — Live + Upcoming market tables + real-time price/volume simulation via `useSimulatedMarkets` hook + flash green/red `AnimatedValue` component on change
+4. **HowToJoinSection** — Buy/Sell tab toggle with sliding panels (translateX) + step cards with glassmorphism + arrow connectors + video background (`/assets/howtojoin-bg.mp4`, `object-bottom`)
+5. **FaqSection** — 7-item accordion with `grid-template-rows` animation
+6. **Footer** — 4 link columns + brand
+
+### ✅ Completed — Global Components
+- **Navbar** (639 lines) — sticky, glassmorphism on scroll (inline styles for backdrop-blur due to Tailwind v4 JIT issue), 4 dropdowns (Chain, Language, Earn, Resources), wallet connect modal, user menu
+- **ConnectWalletModal** — 6 networks × 5 wallets, tab switching
+- **Button** (356 lines) — 4 variants × 5 appearances × 4 sizes, loading state
+- **Input** — 2 variants × 2 sizes, error state, icons
+- **Checkbox** — custom styled, indeterminate support
+- **Toast** — 6 types, auto-dismiss, action buttons
+- **i18n** — LanguageContext with 5 languages, all sections translated
+
+### ✅ Completed — Design System
+- ~100+ CSS tokens in `src/index.css` (`@theme` block)
+- Typography scale: display-lg → body-xs
+- Color tokens: `--wm-bg-*`, `--wm-text-*`, `--wm-border-*`, `--wm-overlay-*`
+- Zero `any` types, zero console errors
+
+### ✅ Completed — Real-time Data Simulation
+- `src/hooks/useSimulatedStats.ts` — stats nudge every 6-9s
+- `src/hooks/useSimulatedMarkets.ts` — price random-walk ±0.5-2%, volume +20-350/tick every 4-6s, watchers +1-15 every 10-15s
+
+### ⚠️ Known Technical Issues
+- **`page-fade-in` breaks `position: fixed`**: The CSS animation in `AppLayout.tsx > PageTransition` creates `transform: matrix(1,0,0,1,0,0)` which breaks fixed positioning for all descendants. Any modal rendered inside page content MUST use `createPortal(jsx, document.body)`. VideoModal already fixed.
+- **Tailwind v4 JIT + dynamic classes**: Arbitrary classes like `backdrop-blur-[16px]` in conditional expressions may not generate CSS. Use inline `style={{}}` as workaround.
+- **Preview tool dark screenshots**: JPEG compression makes dark UI appear all-black. Use Chrome browser or `preview_eval`/`preview_inspect` for verification.
+
+### 🔴 TODO — Day 4 Priority
+1. **Responsive mobile** — add breakpoints to: Navbar (hamburger menu), HeroSection (stack vertical), StatsSection (2×2 grid), MarketTodaySection (horizontal scroll or card layout), HowToJoinSection (stack cards vertical), FaqSection, Footer
+2. **Add 1 strategic page** — Dashboard or Market Detail page with real content (not placeholder). This satisfies the "multiple pages" Minimum requirement.
+3. **Presentation prep** — AI Showcase already has 8 annotated screenshots in `ai-showcase/`
