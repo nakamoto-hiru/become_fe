@@ -15,8 +15,8 @@ function App() {
         {/* All pages share the global Navbar via AppLayout */}
         <Route element={<AppLayout />}>
           {/* ── Main pages ────────────────────────────────────────────── */}
-          <Route path="/"                    element={<PremarketPage />} />
-          <Route path="/home"                element={<HomePage />} />
+          <Route path="/"                    element={<HomePage />} />
+          <Route path="/premarket"           element={<PremarketPage />} />
           <Route path="/premarket/:slug"     element={<UnderDevelopmentPage />} />
 
           {/* ── Navbar routes — placeholder until built ───────────────── */}

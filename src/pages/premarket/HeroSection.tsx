@@ -235,7 +235,7 @@ function GetStartedButton({ label }: { label: string }) {
 
   return (
     <button
-      onClick={() => navigate('/home')}
+      onClick={() => navigate('/')}
       className={cn(
         'group/btn relative flex items-center w-fit overflow-hidden',
         // Figma-exact padding and radius

@@ -52,7 +52,7 @@ interface NavItemConfig {
 }
 
 const NAV_ITEMS: NavItemConfig[] = [
-  { labelKey: 'nav.premarket', href: '/'          },
+  { labelKey: 'nav.premarket', href: '/premarket'  },
   { labelKey: 'nav.dashboard', href: '/dashboard' },
   { labelKey: 'nav.earn',      href: '/earn',     panel: 'earn' },
   { labelKey: 'nav.resources', href: '/resources', panel: 'resources' },
@@ -110,7 +110,7 @@ function useOutsideClick(ref: React.RefObject<HTMLElement | null>, onClose: () =
 function Logo() {
   return (
     <Link
-      to="/home"
+      to="/"
       className="flex items-center shrink-0 p-1.5 hover:opacity-90 transition-opacity outline-none"
       aria-label="Whales Market home"
     >
@@ -552,7 +552,7 @@ function MobileDrawer({
       >
         {/* Drawer header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--wm-border-01)]">
-          <Link to="/home" onClick={onClose} className="flex items-center shrink-0">
+          <Link to="/" onClick={onClose} className="flex items-center shrink-0">
             <img src="/logo.svg" alt="Whales Market" className="h-8 w-auto" />
           </Link>
           <button
