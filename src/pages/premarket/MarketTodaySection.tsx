@@ -1,6 +1,7 @@
-import { useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { RightLine, LivePhotoLine, RocketLine } from '@mingcute/react'
+import { cn } from '@/lib/utils'
 import type { LiveMarketItem, UpcomingMarketItem } from '@/mock-data/premarket'
 import { useLanguage } from '@/contexts/LanguageContext'
 import type { TranslationKey } from '@/i18n/translations'
@@ -16,6 +17,14 @@ const FlashStyles = () => (
     @keyframes mkt-flash-red {
       0%   { color: var(--wm-text-danger); }
       100% { color: var(--wm-text-01); }
+    }
+    @keyframes tab-slide-left {
+      from { opacity: 0; transform: translateX(-16px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes tab-slide-right {
+      from { opacity: 0; transform: translateX(16px); }
+      to   { opacity: 1; transform: translateX(0); }
     }
   `}</style>
 )
@@ -126,13 +135,13 @@ const LiveCard = ({
 }) => (
   <div className="flex-1 rounded-[16px] overflow-hidden border border-wm-border-01 flex flex-col">
     {/* Header */}
-    <div className="flex items-center gap-2 px-5 py-4 border-b border-wm-border-01">
+    <div className="flex items-center gap-2 px-3 md:px-5 py-3 md:py-4 border-b border-wm-border-01">
       {/* icon-slot: p-0.5 — color on wrapper so SVG inherits via currentColor */}
       <div className="flex items-center p-0.5 shrink-0 text-wm-icon-green">
         <LivePhotoLine size={24} />
       </div>
       <span
-        className="flex-1 text-heading-sm text-wm-text-01"
+        className="flex-1 text-label-md md:text-heading-sm text-wm-text-01"
         style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}
       >
         {t('market.live')}
@@ -146,12 +155,12 @@ const LiveCard = ({
 
         {/* Column headers */}
         <div
-          className="flex items-start gap-2 px-3 text-label-xs text-wm-text-03"
+          className="flex items-start gap-2 px-2 md:px-3 text-label-xs text-wm-text-03"
           style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}
         >
-          <div className="flex flex-col justify-center shrink-0 w-[180px]">{t('market.colMarket')}</div>
+          <div className="flex flex-[1_0_0] md:flex-none md:w-[180px] flex-col justify-center min-h-px min-w-px">{t('market.colMarket')}</div>
           <div className="flex flex-[1_0_0] flex-col justify-center min-h-px min-w-px text-right">{t('market.colVolume')}</div>
-          <div className="flex flex-col justify-center shrink-0 text-right w-[180px]">{t('market.colPrice')}</div>
+          <div className="flex flex-[1_0_0] md:flex-none md:w-[180px] flex-col justify-center min-h-px min-w-px text-right">{t('market.colPrice')}</div>
         </div>
 
         {/* Token rows */}
@@ -159,7 +168,7 @@ const LiveCard = ({
           <div
             key={item.id}
             onClick={() => navigate(`/premarket/${item.slug}`)}
-            className="flex items-center gap-2 p-3 rounded-[12px] cursor-pointer transition-colors"
+            className="flex items-center gap-2 p-2 md:p-3 rounded-[12px] cursor-pointer transition-colors"
             style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}
             onMouseEnter={(e) => {
               (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--wm-bg-02)'
@@ -168,13 +177,13 @@ const LiveCard = ({
               (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'
             }}
           >
-            {/* image-slot */}
-            <TokenImage logoUrl={item.logoUrl} chainLogoUrl={item.chainLogoUrl} name={item.name} />
-
-            {/* Name */}
-            <div className="flex flex-[1_0_0] flex-col gap-1 items-start justify-center min-h-px min-w-px">
-              <p className="text-label-md text-wm-text-01 leading-none">{item.name}</p>
-              <p className="text-body-xs text-wm-text-03">{item.protocol}</p>
+            {/* Name group: image-slot + name text together in flex-[1_0_0] */}
+            <div className="flex flex-[1_0_0] gap-2 items-center min-h-px min-w-px">
+              <TokenImage logoUrl={item.logoUrl} chainLogoUrl={item.chainLogoUrl} name={item.name} />
+              <div className="flex flex-[1_0_0] flex-col gap-1 items-start justify-center min-h-px min-w-px">
+                <p className="text-label-sm md:text-label-md text-wm-text-01 leading-none">{item.name}</p>
+                <p className="text-body-xs text-wm-text-03">{item.protocol}</p>
+              </div>
             </div>
 
             {/* Volume — animated */}
@@ -245,13 +254,13 @@ const UpcomingCard = ({
 }) => (
   <div className="flex-1 rounded-[16px] overflow-hidden border border-wm-border-01 flex flex-col">
     {/* Header — gap-4 per Figma */}
-    <div className="flex items-center gap-2 px-5 py-4 border-b border-wm-border-01">
+    <div className="flex items-center gap-2 px-3 md:px-5 py-3 md:py-4 border-b border-wm-border-01">
       {/* icon-slot: p-0.5 — color on wrapper so SVG inherits via currentColor */}
       <div className="flex items-center p-0.5 shrink-0 text-wm-icon-indigo">
         <RocketLine size={24} />
       </div>
       <span
-        className="flex-1 text-heading-sm text-wm-text-01"
+        className="flex-1 text-label-md md:text-heading-sm text-wm-text-01"
         style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}
       >
         {t('market.upcoming')}
@@ -265,12 +274,12 @@ const UpcomingCard = ({
 
         {/* Column headers */}
         <div
-          className="flex items-start gap-2 px-3 text-label-xs text-wm-text-03"
+          className="flex items-start gap-2 px-2 md:px-3 text-label-xs text-wm-text-03"
           style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}
         >
           <div className="flex flex-[1_0_0] flex-col justify-center min-h-px min-w-px">{t('market.colMarket')}</div>
-          <div className="flex flex-col justify-center shrink-0 w-[164px]">{t('market.colBackers')}</div>
-          <div className="flex flex-col justify-center shrink-0 text-right w-[164px]">{t('market.colWatchers')}</div>
+          <div className="flex flex-[1_0_0] md:flex-none md:w-[164px] flex-col justify-center min-h-px min-w-px">{t('market.colBackers')}</div>
+          <div className="flex flex-[1_0_0] md:flex-none md:w-[164px] flex-col justify-center min-h-px min-w-px text-right">{t('market.colWatchers')}</div>
         </div>
 
         {/* Token rows */}
@@ -278,7 +287,7 @@ const UpcomingCard = ({
           <div
             key={item.id}
             onClick={() => navigate(`/premarket/${item.slug}`)}
-            className="flex items-center gap-2 p-3 rounded-[12px] cursor-pointer transition-colors"
+            className="flex items-center gap-2 p-2 md:p-3 rounded-[12px] cursor-pointer transition-colors"
             style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}
             onMouseEnter={(e) => {
               (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--wm-bg-02)'
@@ -291,21 +300,21 @@ const UpcomingCard = ({
             <div className="flex flex-[1_0_0] gap-2 items-center min-h-px min-w-px">
               <TokenImage logoUrl={item.logoUrl} chainLogoUrl={item.chainLogoUrl} name={item.name} />
               <div className="flex flex-[1_0_0] flex-col gap-1 items-start justify-center min-h-px min-w-px">
-                <p className="text-label-md text-wm-text-01 leading-none">{item.name}</p>
+                <p className="text-label-sm md:text-label-md text-wm-text-01 leading-none">{item.name}</p>
                 <p className="text-body-xs text-wm-text-03">{item.protocol}</p>
               </div>
             </div>
 
             {/* Backers table-cell */}
             <div className="flex flex-row items-center self-stretch">
-              <div className="flex flex-col h-full items-start justify-center w-[164px] shrink-0">
+              <div className="flex flex-col h-full items-start justify-center flex-[1_0_0] md:flex-none md:w-[164px] min-h-px min-w-px md:shrink-0">
                 <BackerStack avatarUrls={item.backerAvatarUrls} extra={item.backersExtra} />
               </div>
             </div>
 
             {/* Watchers table-cell — animated */}
             <div className="flex flex-row items-center self-stretch">
-              <div className="flex flex-col h-full items-end justify-center w-[164px] shrink-0">
+              <div className="flex flex-col h-full items-end justify-center flex-[1_0_0] md:flex-none md:w-[164px] min-h-px min-w-px md:shrink-0">
                 <AnimatedValue
                   value={item.watchers}
                   format={(v) => v.toLocaleString('en-US')}
@@ -319,34 +328,110 @@ const UpcomingCard = ({
   </div>
 )
 
+/* ── Mobile Tab Bar — Live/Upcoming toggle (Figma: 46357:710862) ────────── */
+const MobileTabBar = ({
+  activeTab,
+  onTabChange,
+  t,
+}: {
+  activeTab: 'live' | 'upcoming'
+  onTabChange: (tab: 'live' | 'upcoming') => void
+  t: (key: TranslationKey) => string
+}) => (
+  <div
+    className="flex p-1 rounded-[16px] border overflow-hidden lg:hidden w-full md:w-fit md:self-center"
+    style={{ backgroundColor: 'var(--wm-bg-01)', borderColor: 'var(--wm-border-01)' }}
+  >
+    {(['live', 'upcoming'] as const).map((tab) => (
+      <button
+        key={tab}
+        onClick={() => onTabChange(tab)}
+        className={cn(
+          'flex-[1_0_0] md:flex-none md:shrink-0 px-5 py-3 text-label-sm md:text-label-md text-center transition-all duration-200 cursor-pointer outline-none whitespace-nowrap',
+          activeTab === tab ? 'rounded-xl' : 'rounded-[10px]',
+        )}
+        style={{
+          backgroundColor: activeTab === tab ? 'var(--wm-bg-primary-muted-20)' : 'transparent',
+          color: activeTab === tab ? 'var(--wm-text-green)' : 'var(--wm-text-03)',
+        }}
+      >
+        {tab === 'live' ? t('market.live') : t('market.upcoming')}
+      </button>
+    ))}
+  </div>
+)
+
 /* ── Section ──────────────────────────────────────────────────────────────── */
 const MarketTodaySection = () => {
   const navigate = useNavigate()
   const { t } = useLanguage()
   const { liveData, upcomingData } = useSimulatedMarkets()
+  const [mobileTab, setMobileTab] = useState<'live' | 'upcoming'>('live')
+
+  /* ── Tab slide direction tracking ─────────────────────────────────── */
+  const TAB_INDEX: Record<'live' | 'upcoming', number> = { live: 0, upcoming: 1 }
+  const prevTabRef = useRef(mobileTab)
+  const [slideDir, setSlideDir] = useState<'left' | 'right'>('right')
+
+  const switchMobileTab = (tab: 'live' | 'upcoming') => {
+    setSlideDir(TAB_INDEX[tab] > TAB_INDEX[prevTabRef.current] ? 'right' : 'left')
+    prevTabRef.current = tab
+    setMobileTab(tab)
+  }
 
   return (
     <section className="py-8 md:py-12 bg-wm-bg-01">
       <FlashStyles />
       <div className="max-w-[1440px] mx-auto px-4 md:px-12 py-4 md:py-6">
 
-        {/* Title block */}
-        <div className="text-center mb-8 md:mb-16 max-w-[720px] mx-auto flex flex-col gap-4">
-          <h2
-            className="text-display-sm md:text-display-md lg:text-display-lg text-wm-text-01"
-            style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}
+        {/* Mobile: title + tab + card — matches HowToJoin spacing */}
+        <div className="flex flex-col gap-8 md:gap-10 lg:gap-12 items-center lg:hidden">
+          {/* Title + tab block */}
+          <div className="flex flex-col gap-6 md:gap-8 items-center max-w-[720px] w-full">
+            <div className="text-center flex flex-col gap-2 w-full">
+              <h2
+                className="text-heading-md md:text-display-md lg:text-display-lg text-wm-text-01"
+                style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}
+              >
+                {t('market.title')}
+              </h2>
+              <p className="text-body-sm md:text-body-lg text-wm-text-02">
+                {t('market.desc')}
+              </p>
+            </div>
+            <MobileTabBar activeTab={mobileTab} onTabChange={switchMobileTab} t={t} />
+          </div>
+          {/* Card — slide animation on tab switch */}
+          <div
+            key={mobileTab}
+            className="w-full"
+            style={{ animation: `tab-slide-${slideDir} 280ms ease-out both` }}
           >
-            {t('market.title')}
-          </h2>
-          <p className="text-body-sm md:text-body-lg text-wm-text-02">
-            {t('market.desc')}
-          </p>
+            {mobileTab === 'live'
+              ? <LiveCard navigate={navigate} t={t} markets={liveData} />
+              : <UpcomingCard navigate={navigate} t={t} markets={upcomingData} />
+            }
+          </div>
         </div>
 
-        {/* Cards — stack vertically on mobile/tablet, side by side on desktop */}
-        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
-          <LiveCard navigate={navigate} t={t} markets={liveData} />
-          <UpcomingCard navigate={navigate} t={t} markets={upcomingData} />
+        {/* Desktop: title + both cards side by side */}
+        <div className="hidden lg:block">
+          <div className="text-center mb-16 max-w-[720px] mx-auto flex flex-col gap-2">
+            <h2
+              className="text-heading-md md:text-display-md lg:text-display-lg text-wm-text-01"
+              style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}
+            >
+              {t('market.title')}
+            </h2>
+            <p className="text-body-sm md:text-body-lg text-wm-text-02">
+              {t('market.desc')}
+            </p>
+          </div>
+
+          <div className="flex gap-8">
+            <LiveCard navigate={navigate} t={t} markets={liveData} />
+            <UpcomingCard navigate={navigate} t={t} markets={upcomingData} />
+          </div>
         </div>
       </div>
     </section>

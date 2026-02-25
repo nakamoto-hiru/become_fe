@@ -1,4 +1,5 @@
 import { Fragment, useMemo, useState } from 'react'
+import { cn } from '@/lib/utils'
 import { useLanguage } from '@/contexts/LanguageContext'
 import type { Step } from '@/mock-data/premarket'
 
@@ -100,7 +101,7 @@ const HowToJoinSection = () => {
   ], [t])
 
   return (
-    <section className="relative pt-12 pb-12 overflow-hidden bg-wm-bg-01">
+    <section className="relative py-8 md:py-12 overflow-hidden bg-wm-bg-01">
       {/* ── Video background ─────────────────────────────────────────────────── */}
       <div className="absolute inset-0 pointer-events-none">
         <video
@@ -135,8 +136,8 @@ const HowToJoinSection = () => {
         <div className="flex flex-col gap-6 md:gap-8 items-center max-w-[720px] w-full">
 
           {/* Text block */}
-          <div className="flex flex-col gap-4 text-center w-full">
-            <h2 className="text-display-sm md:text-display-md lg:text-display-lg text-wm-text-01">
+          <div className="flex flex-col gap-2 text-center w-full">
+            <h2 className="text-heading-md md:text-display-md lg:text-display-lg text-wm-text-01">
               {t('htj.title')}
             </h2>
             <p className="text-body-sm md:text-body-lg text-wm-text-02">
@@ -144,9 +145,9 @@ const HowToJoinSection = () => {
             </p>
           </div>
 
-          {/* Tab toggle — bg-01 border-01 p-4 rounded-16 */}
+          {/* Tab toggle — Figma node 46153:848847 */}
           <div
-            className="flex p-1 rounded-[16px] border"
+            className="flex p-1 rounded-[16px] border overflow-hidden w-full md:w-auto"
             style={{
               backgroundColor: 'var(--wm-bg-01)',
               borderColor: 'var(--wm-border-01)',
@@ -156,11 +157,11 @@ const HowToJoinSection = () => {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className="px-5 py-3 text-label-md transition-all duration-200 cursor-pointer outline-none"
+                className={cn(
+                  'shrink-0 px-5 py-3 text-label-sm md:text-label-md text-center transition-all duration-200 cursor-pointer outline-none whitespace-nowrap flex-[1_0_0] ',
+                  activeTab === tab ? 'rounded-xl' : 'rounded-[10px]',
+                )}
                 style={{
-                  borderRadius: activeTab === tab ? 12 : 10,
-                  // buy active: green muted bg + green text (node 46139:855193)
-                  // sell active: danger red muted bg + danger red text (node 46153:848476)
                   backgroundColor:
                     activeTab === tab
                       ? tab === 'buy'

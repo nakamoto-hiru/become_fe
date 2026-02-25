@@ -80,7 +80,7 @@ export default function ChainDropdown({ currentChain, onSelect, onClose }: Props
                 onClick={() => { onSelect(chain); onClose() }}
                 className={cn(
                   'flex items-center gap-2 w-full text-left',
-                  'px-2 py-1.5 rounded-[var(--radius-lg,8px)]',
+                  'px-2 py-2 rounded-[var(--radius-lg,8px)]',
                   'text-sm font-medium leading-5 text-[var(--wm-text-01)]',
                   'transition-colors duration-100 cursor-pointer outline-none',
                   isSelected

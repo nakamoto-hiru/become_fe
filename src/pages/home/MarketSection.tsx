@@ -14,6 +14,8 @@ import WhalesBadge from '@/components/WhalesBadge'
 import { Tooltip } from '@/components/Tooltip'
 import { SearchLine, Filter2Fill, DownFill, CheckFill, CloseLine } from '@mingcute/react'
 import { Skeleton } from '@/components/Skeleton'
+import { useLanguage } from '@/contexts/LanguageContext'
+import type { TranslationKey } from '@/i18n/translations'
 
 /* ── Flash + tab slide animation styles — injected once ────────────── */
 const FlashStyles = () => (
@@ -77,10 +79,10 @@ const AnimatedValue = ({
 
 export type MarketTab = 'live' | 'upcoming' | 'ended'
 
-const TABS: { id: MarketTab; label: string }[] = [
-  { id: 'live', label: 'Live Market' },
-  { id: 'upcoming', label: 'Upcoming' },
-  { id: 'ended', label: 'Ended' },
+const TABS: { id: MarketTab; labelKey: TranslationKey }[] = [
+  { id: 'live', labelKey: 'home.liveMarket' },
+  { id: 'upcoming', labelKey: 'home.upcoming' },
+  { id: 'ended', labelKey: 'home.ended' },
 ]
 
 const getCount = (tab: MarketTab): number => {
@@ -335,6 +337,7 @@ const SettleCell = ({ item }: { item: MarketListItem }) => {
 /* ── Column headers — Figma: Token flex-1, rest w-168 ─────────────── */
 interface ColDef {
   label: string
+  labelKey?: TranslationKey
   width: string
   align: string
   sortKey?: SortKey
@@ -342,13 +345,13 @@ interface ColDef {
 }
 
 const COLUMNS: ColDef[] = [
-  { label: 'Token', width: 'flex-1', align: '' },
+  { label: 'Token', labelKey: 'home.colToken', width: 'flex-1', align: '' },
   { label: '', width: 'flex-[1_0_0]', align: '' },           // chart — takes remaining
-  { label: 'Last Price ($)', width: 'w-[168px]', align: 'text-right justify-end', sortKey: 'lastPrice' },
+  { label: 'Last Price ($)', labelKey: 'home.colLastPrice', width: 'w-[168px]', align: 'text-right justify-end', sortKey: 'lastPrice' },
   { label: '24h Vol. ($)', width: 'w-[168px]', align: 'text-right justify-end', sortKey: 'liqVol24h' },
-  { label: 'Total Vol. ($)', width: 'w-[168px]', align: 'text-right justify-end', sortKey: 'totalVol' },
-  { label: 'Implied FDV ($)', width: 'w-[168px]', align: 'text-right justify-end', sortKey: 'impliedFdv' },
-  { label: 'Settle Time (UTC)', width: 'w-[168px]', align: 'text-right justify-end', tooltip: true },
+  { label: 'Total Vol. ($)', labelKey: 'home.colTotalVol', width: 'w-[168px]', align: 'text-right justify-end', sortKey: 'totalVol' },
+  { label: 'Implied FDV ($)', labelKey: 'home.colImpliedFdv', width: 'w-[168px]', align: 'text-right justify-end', sortKey: 'impliedFdv' },
+  { label: 'Settle Time (UTC)', labelKey: 'home.colSettleTime', width: 'w-[168px]', align: 'text-right justify-end', tooltip: true },
 ]
 
 /* ── Market row — Figma node 44740:768247 ─────────────────────────── */
@@ -429,6 +432,7 @@ const MarketRow = ({ item, onClick }: { item: MarketListItem; onClick?: () => vo
 
 /* ── Settle Time header cell — with Tooltip ───────────────────────── */
 const SettleTimeHeader = ({ col }: { col: ColDef }) => {
+  const { t } = useLanguage()
   const [hovered, setHovered] = useState(false)
 
   return (
@@ -441,7 +445,7 @@ const SettleTimeHeader = ({ col }: { col: ColDef }) => {
         className="text-body-xs text-wm-text-03 border-b border-dashed border-wm-border-03 pb-0.5 cursor-default"
         style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}
       >
-        {col.label}
+        {col.labelKey ? t(col.labelKey) : col.label}
       </span>
       <Tooltip
         content={settleTooltipContent}
@@ -558,6 +562,7 @@ type UpcomingSortKey = 'watchers' | 'moniScore'
 
 interface UpcomingColDef {
   label: string
+  labelKey?: TranslationKey
   width: string
   align: string
   sortKey?: UpcomingSortKey
@@ -565,11 +570,11 @@ interface UpcomingColDef {
 }
 
 const UPCOMING_COLUMNS: UpcomingColDef[] = [
-  { label: 'Token', width: 'flex-1', align: '' },
-  { label: 'Watchers', width: 'w-[192px]', align: '', sortKey: 'watchers' },
-  { label: 'Investors & Backers', width: 'w-[192px]', align: '', tooltip: true },
-  { label: 'Narrative', width: 'w-[192px]', align: '', tooltip: true },
-  { label: 'Moni Score', width: 'w-[192px]', align: 'justify-end', tooltip: true },
+  { label: 'Token', labelKey: 'home.colToken', width: 'flex-1', align: '' },
+  { label: 'Watchers', labelKey: 'home.colWatchers', width: 'w-[192px]', align: '', sortKey: 'watchers' },
+  { label: 'Investors & Backers', labelKey: 'home.colInvestors', width: 'w-[192px]', align: '', tooltip: true },
+  { label: 'Narrative', labelKey: 'home.colNarrative', width: 'w-[192px]', align: '', tooltip: true },
+  { label: 'Moni Score', labelKey: 'home.colMoniScore', width: 'w-[192px]', align: 'justify-end', tooltip: true },
 ]
 
 /* ── Upcoming tooltip contents ───────────────────────────────────── */
@@ -651,6 +656,7 @@ const UpcomingTooltipHeader = ({ col, sortDir, onSort }: {
   sortDir: SortDir
   onSort?: () => void
 }) => {
+  const { t } = useLanguage()
   const [hovered, setHovered] = useState(false)
   const tooltipContent = UPCOMING_TOOLTIPS[col.label]
 
@@ -671,7 +677,7 @@ const UpcomingTooltipHeader = ({ col, sortDir, onSort }: {
         }`}
         style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}
       >
-        {col.label}
+        {col.labelKey ? t(col.labelKey) : col.label}
       </span>
       {col.sortKey && <SortIcon dir={sortDir} />}
       {tooltipContent && (
@@ -706,6 +712,7 @@ type EndedSortKey = 'lastPrice' | 'totalVol'
 
 interface EndedColDef {
   label: string
+  labelKey?: TranslationKey
   width: string
   align: string
   sortKey?: EndedSortKey
@@ -713,11 +720,11 @@ interface EndedColDef {
 }
 
 const ENDED_COLUMNS: EndedColDef[] = [
-  { label: 'Token', width: 'flex-1', align: '' },
-  { label: 'Last Price ($)', width: 'w-[192px]', align: 'text-right justify-end', sortKey: 'lastPrice' },
-  { label: 'Total Vol. ($)', width: 'w-[192px]', align: 'text-right justify-end', sortKey: 'totalVol' },
-  { label: 'Settle Starts (UTC)', width: 'w-[192px]', align: 'text-right justify-end', tooltip: true },
-  { label: 'Settle Ends (UTC)', width: 'w-[192px]', align: 'text-right justify-end', tooltip: true },
+  { label: 'Token', labelKey: 'home.colToken', width: 'flex-1', align: '' },
+  { label: 'Last Price ($)', labelKey: 'home.colLastPrice', width: 'w-[192px]', align: 'text-right justify-end', sortKey: 'lastPrice' },
+  { label: 'Total Vol. ($)', labelKey: 'home.colTotalVol', width: 'w-[192px]', align: 'text-right justify-end', sortKey: 'totalVol' },
+  { label: 'Settle Starts (UTC)', labelKey: 'home.colSettleStarts', width: 'w-[192px]', align: 'text-right justify-end', tooltip: true },
+  { label: 'Settle Ends (UTC)', labelKey: 'home.colSettleEnds', width: 'w-[192px]', align: 'text-right justify-end', tooltip: true },
 ]
 
 /* ── Ended tooltip contents ────────────────────────────────────────── */
@@ -826,6 +833,7 @@ const EndedTooltipHeader = ({ col, sortDir, onSort }: {
   sortDir: SortDir
   onSort?: () => void
 }) => {
+  const { t } = useLanguage()
   const [hovered, setHovered] = useState(false)
   const tooltipContent = ENDED_TOOLTIPS[col.label]
 
@@ -846,7 +854,7 @@ const EndedTooltipHeader = ({ col, sortDir, onSort }: {
         }`}
         style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}
       >
-        {col.label}
+        {col.labelKey ? t(col.labelKey) : col.label}
       </span>
       {col.sortKey && <SortIcon dir={sortDir} />}
       {tooltipContent && (
@@ -902,9 +910,185 @@ const MarketSkeletonRow = ({ index }: { index: number }) => (
   </div>
 )
 
+/* ══════════════════════════════════════════════════════════════════════
+ * MOBILE COMPONENTS — simplified rows for < lg breakpoint
+ * ════════════════════════════════════════════════════════════════════ */
+
+/* ── Mobile skeleton row ─────────────────────────────────────────── */
+const MobileSkeletonRow = ({ index }: { index: number }) => (
+  <div
+    className="flex items-center justify-between px-2 border-t border-wm-border-01"
+    style={{ animationDelay: `${index * 80}ms` }}
+  >
+    <div className="flex items-center gap-3 py-4">
+      <div className="relative p-1 shrink-0">
+        <Skeleton w={36} h={36} circle />
+        <div className="absolute bottom-0 right-0">
+          <Skeleton w={16} h={16} circle />
+        </div>
+      </div>
+      <div className="flex flex-col gap-1">
+        <Skeleton w={60} h={20} />
+        <Skeleton w={80} h={20} />
+      </div>
+    </div>
+    <div className="flex flex-col items-end gap-1">
+      <Skeleton w={56} h={20} />
+      <Skeleton w={44} h={16} />
+    </div>
+  </div>
+)
+
+/* ── Mobile Live row — Token + Last Price ────────────────────────── */
+const MobileLiveRow = ({ item, onClick }: { item: MarketListItem; onClick?: () => void }) => {
+  const priceChg = fmtChange(item.priceChange)
+  return (
+    <div
+      onClick={onClick}
+      className="flex items-center justify-between px-2 border-t border-wm-border-01 hover:bg-wm-overlay-3 transition-colors cursor-pointer"
+    >
+      {/* Left: Token */}
+      <div className="flex-1 min-w-0 flex items-center gap-3 py-4">
+        <div className="relative p-1 shrink-0">
+          <img src={item.logoUrl} alt={item.name} className="size-9 rounded-full object-cover" />
+          <img
+            src={item.chainLogoUrl}
+            alt={item.chain}
+            className="absolute bottom-0 left-0 size-4 rounded-[4px] border-2 border-wm-bg-01 object-cover"
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-2">
+            <span className="text-label-sm text-wm-text-01" style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}>
+              {item.name}
+            </span>
+            {item.isNew && <WhalesBadge badge="new" label="New Market" />}
+          </div>
+          <span className="text-body-sm text-wm-text-03" style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}>
+            {item.protocol}
+          </span>
+        </div>
+      </div>
+      {/* Right: Price + Change */}
+      <div className="shrink-0 flex flex-col items-end gap-1">
+        <AnimatedValue value={item.lastPrice} format={fmtPrice} className="text-label-sm text-wm-text-01" />
+        <span className={`text-body-sm ${priceChg.cls}`} style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}>
+          {priceChg.text}
+        </span>
+      </div>
+    </div>
+  )
+}
+
+/* ── Mobile Upcoming row — Token + Watchers ──────────────────────── */
+const MobileUpcomingRow = ({ item, onClick }: { item: UpcomingMarketItem; onClick?: () => void }) => (
+  <div
+    onClick={onClick}
+    className="flex items-center justify-between px-2 border-t border-wm-border-01 hover:bg-wm-overlay-3 transition-colors cursor-pointer"
+  >
+    {/* Left: Token */}
+    <div className="flex-1 min-w-0 flex items-center gap-3 py-4">
+      <div className="relative p-1 shrink-0">
+        <img src={item.logoUrl} alt={item.name} className="size-9 rounded-full object-cover" />
+        <img
+          src={item.chainLogoUrl}
+          alt={item.chain}
+          className="absolute bottom-0 left-0 size-4 rounded-[4px] border-2 border-wm-bg-01 object-cover"
+        />
+      </div>
+      <div className="flex flex-col gap-1">
+        <div className="flex items-center gap-2">
+          <span className="text-label-sm text-wm-text-01" style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}>
+            {item.name}
+          </span>
+          {item.isNew && <WhalesBadge badge="new" label="New Market" />}
+        </div>
+        <span className="text-body-sm text-wm-text-03" style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}>
+          {item.protocol}
+        </span>
+      </div>
+    </div>
+    {/* Right: Watchers */}
+    <div className="shrink-0 flex flex-col items-end">
+      <AnimatedValue value={item.watchers} format={fmtWatchers} className="text-label-sm text-wm-text-01" />
+    </div>
+  </div>
+)
+
+/* ── Mobile Ended row — Token + Last Price ───────────────────────── */
+const MobileEndedRow = ({ item, onClick }: { item: EndedMarketItem; onClick?: () => void }) => (
+  <div
+    onClick={onClick}
+    className="flex items-center justify-between px-2 border-t border-wm-border-01 hover:bg-wm-overlay-3 transition-colors cursor-pointer"
+  >
+    {/* Left: Token */}
+    <div className="flex-1 min-w-0 flex items-center gap-3 py-4">
+      <div className="relative p-1 shrink-0">
+        <img src={item.logoUrl} alt={item.name} className="size-9 rounded-full object-cover" />
+        <img
+          src={item.chainLogoUrl}
+          alt={item.chain}
+          className="absolute bottom-0 left-0 size-4 rounded-[4px] border-2 border-wm-bg-01 object-cover"
+        />
+      </div>
+      <div className="flex flex-col gap-1">
+        <span className="text-label-sm text-wm-text-01" style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}>
+          {item.name}
+        </span>
+        <span className="text-body-sm text-wm-text-03" style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}>
+          {item.protocol}
+        </span>
+      </div>
+    </div>
+    {/* Right: Last Price */}
+    <div className="shrink-0 flex flex-col items-end">
+      <span className="text-label-sm text-wm-text-01" style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}>
+        {fmtPrice(item.lastPrice)}
+      </span>
+    </div>
+  </div>
+)
+
+/* ── Mobile column header — 2-column: left label + right sortable ── */
+const MobileColumnHeader = ({
+  leftLabel,
+  rightLabel,
+  sortDir,
+  onSort,
+}: {
+  leftLabel: string
+  rightLabel: string
+  sortDir: SortDir
+  onSort?: () => void
+}) => (
+  <div className="flex items-center justify-between px-2 py-2">
+    <span
+      className="text-body-xs text-wm-text-03"
+      style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}
+    >
+      {leftLabel}
+    </span>
+    <div
+      className={`flex items-center gap-0.5 ${onSort ? 'cursor-pointer select-none group/sort' : ''}`}
+      onClick={onSort}
+    >
+      <span
+        className={`text-body-xs transition-colors ${
+          sortDir ? 'text-wm-text-01' : 'text-wm-text-03 group-hover/sort:text-wm-text-02'
+        }`}
+        style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}
+      >
+        {rightLabel}
+      </span>
+      {onSort && <SortIcon dir={sortDir} />}
+    </div>
+  </div>
+)
+
 /* ── MarketSection — Tabs + Table unified ──────────────────────────── */
 
 const MarketSection = () => {
+  const { t } = useLanguage()
   const [searchParams, setSearchParams] = useSearchParams()
   const tabFromUrl = searchParams.get('tab') as MarketTab | null
   const [activeTab, setActiveTab] = useState<MarketTab>(
@@ -1058,8 +1242,8 @@ const MarketSection = () => {
     <div ref={sectionRef} id="market-section" className="flex flex-col pb-4 scroll-mt-20">
       <FlashStyles />
       {/* ── Tab bar ─────────────────────────────────────────────── */}
-      <div className="py-3 flex items-center">
-        <div className="flex items-center gap-6 flex-1">
+      <div className="py-3 flex flex-col gap-3 lg:flex-row lg:items-center">
+        <div className="flex items-center gap-4 lg:gap-6 flex-1">
           {TABS.map((tab) => {
             const isActive = activeTab === tab.id
             const count = getCount(tab.id)
@@ -1067,15 +1251,15 @@ const MarketSection = () => {
               <button
                 key={tab.id}
                 onClick={() => switchTab(tab.id)}
-                className="group flex items-center gap-2 h-9 shrink-0 cursor-pointer"
+                className="group flex items-center gap-1.5 lg:gap-2 h-9 shrink-0 cursor-pointer"
               >
                 <span
-                  className={`text-heading-sm transition-colors ${
+                  className={`text-label-md lg:text-heading-sm transition-colors ${
                     isActive ? 'text-wm-text-01' : 'text-wm-text-03 group-hover:text-wm-text-01'
                   }`}
                   style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}
                 >
-                  {tab.label}
+                  {t(tab.labelKey)}
                 </span>
                 <span
                   className={`px-2 py-1 rounded-full text-label-2xs uppercase ${
@@ -1090,11 +1274,11 @@ const MarketSection = () => {
           })}
         </div>
 
-        {/* ── Search + Network filter (Ended tab only) ────────── */}
+        {/* ── Search + Network filter (Ended tab only) — desktop: inline, mobile: stacked below ── */}
         {activeTab === 'ended' && (
           <div className="flex items-center gap-2">
             {/* Search Input — states: default(bg-02), hover(bg-03), focus(bg-03), has-value+blur(overlay-5) */}
-            <div className={`flex gap-2 items-center overflow-clip p-2 rounded-lg w-[360px] transition-colors ${searchBgCls}`}>
+            <div className={`flex gap-2 items-center overflow-clip p-2 rounded-lg flex-1 lg:flex-none lg:w-[360px] transition-colors ${searchBgCls}`}>
               <div className="flex items-center p-0.5 shrink-0">
                 <SearchLine className="size-4 text-wm-text-03" />
               </div>
@@ -1104,7 +1288,7 @@ const MarketSection = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => setSearchFocused(true)}
                 onBlur={() => setSearchFocused(false)}
-                placeholder="Search"
+                placeholder={t('home.search')}
                 className="flex-1 min-w-0 bg-transparent outline-none text-body-sm text-wm-text-01 placeholder:text-wm-text-03"
                 style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}
               />
@@ -1138,7 +1322,7 @@ const MarketSection = () => {
                       )}
                     </div>
                     <span className="text-label-sm text-wm-text-01 whitespace-nowrap" style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}>
-                      {isFiltered && selectedNet ? selectedNet.label : 'Network'}
+                      {isFiltered && selectedNet ? selectedNet.label : t('home.network')}
                     </span>
                     <div className={`flex items-center p-0.5 shrink-0 transition-colors ${
                       showNetworkDropdown ? 'text-wm-text-01' : 'text-wm-text-03 group-hover/net:text-wm-text-01'
@@ -1156,7 +1340,7 @@ const MarketSection = () => {
                     {/* Title */}
                     <div className="flex items-center px-2 py-1">
                       <span className="text-label-xs text-wm-text-03" style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}>
-                        Filter by Network
+                        {t('home.filterByNetwork')}
                       </span>
                     </div>
                     {/* Options */}
@@ -1166,7 +1350,7 @@ const MarketSection = () => {
                         <button
                           key={net.id}
                           onClick={() => { setNetworkFilter(net.id); setShowNetworkDropdown(false) }}
-                          className={`flex gap-2 items-center overflow-clip px-2 py-1.5 rounded-lg w-full transition-colors cursor-pointer ${
+                          className={`flex gap-2 items-center overflow-clip px-2 py-2 rounded-lg w-full transition-colors cursor-pointer ${
                             isSelected ? 'bg-wm-bg-03' : 'hover:bg-wm-bg-03'
                           }`}
                         >
@@ -1204,41 +1388,62 @@ const MarketSection = () => {
         {/* ── LIVE TABLE ────────────────────────────────────── */}
         {activeTab === 'live' && (
           <>
-            <div className="flex items-center px-2">
-              {COLUMNS.map((col) => {
-                const isSortable = !!col.sortKey
-                const isActive = col.sortKey === sortKey
-                const dir: SortDir = isActive ? sortDir : null
+            {/* Desktop scrollable table */}
+            <div className="hidden lg:block overflow-x-auto scrollbar-styled">
+              <div className="min-w-fit">
+                <div className="flex items-center px-2">
+                  {COLUMNS.map((col) => {
+                    const isSortable = !!col.sortKey
+                    const isActive = col.sortKey === sortKey
+                    const dir: SortDir = isActive ? sortDir : null
 
-                if (col.tooltip) return <SettleTimeHeader key={col.label} col={col} />
+                    if (col.tooltip) return <SettleTimeHeader key={col.label} col={col} />
 
-                return (
-                  <div
-                    key={col.label || 'chart'}
-                    className={`${col.width} shrink-0 flex items-center gap-0.5 py-2 ${col.align} ${
-                      isSortable ? 'cursor-pointer select-none group/sort' : ''
-                    }`}
-                    onClick={col.sortKey ? () => handleSort(col.sortKey!) : undefined}
-                  >
-                    {col.label && (
-                      <span
-                        className={`text-body-xs transition-colors ${
-                          isActive ? 'text-wm-text-01' : 'text-wm-text-03 group-hover/sort:text-wm-text-02'
+                    return (
+                      <div
+                        key={col.label || 'chart'}
+                        className={`${col.width} shrink-0 flex items-center gap-0.5 py-2 ${col.align} ${
+                          isSortable ? 'cursor-pointer select-none group/sort' : ''
                         }`}
-                        style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}
+                        onClick={col.sortKey ? () => handleSort(col.sortKey!) : undefined}
                       >
-                        {col.label}
-                      </span>
-                    )}
-                    {isSortable && <SortIcon dir={dir} />}
-                  </div>
-                )
-              })}
+                        {col.label && (
+                          <span
+                            className={`text-body-xs transition-colors ${
+                              isActive ? 'text-wm-text-01' : 'text-wm-text-03 group-hover/sort:text-wm-text-02'
+                            }`}
+                            style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}
+                          >
+                            {col.labelKey ? t(col.labelKey) : col.label}
+                          </span>
+                        )}
+                        {isSortable && <SortIcon dir={dir} />}
+                      </div>
+                    )
+                  })}
+                </div>
+                {loading
+                  ? Array.from({ length: 3 }, (_, i) => <MarketSkeletonRow key={`skel-${i}`} index={i} />)
+                  : sorted.map((item) => <MarketRow key={item.id} item={item} onClick={() => navigate(`/premarket/${item.slug}`)} />)
+                }
+              </div>
             </div>
-            {loading
-              ? Array.from({ length: 3 }, (_, i) => <MarketSkeletonRow key={`skel-${i}`} index={i} />)
-              : sorted.map((item) => <MarketRow key={item.id} item={item} onClick={() => navigate(`/premarket/${item.slug}`)} />)
-            }
+            {/* Mobile header */}
+            <div className="lg:hidden">
+              <MobileColumnHeader
+                leftLabel={t('home.colToken')}
+                rightLabel={t('home.colLastPrice')}
+                sortDir={sortKey === 'lastPrice' ? sortDir : null}
+                onSort={() => handleSort('lastPrice')}
+              />
+            </div>
+            {/* Mobile rows */}
+            <div className="lg:hidden">
+              {loading
+                ? Array.from({ length: 5 }, (_, i) => <MobileSkeletonRow key={`mskel-${i}`} index={i} />)
+                : sorted.map((item) => <MobileLiveRow key={item.id} item={item} onClick={() => navigate(`/premarket/${item.slug}`)} />)
+              }
+            </div>
             {!loading && sorted.length === 0 && (
               <div className="py-16 text-center text-wm-text-03 text-body-sm">No markets found for this tab.</div>
             )}
@@ -1248,71 +1453,110 @@ const MarketSection = () => {
         {/* ── UPCOMING TABLE ────────────────────────────────── */}
         {activeTab === 'upcoming' && (
           <>
-            <div className="flex items-center px-2">
-              {UPCOMING_COLUMNS.map((col) => {
-                if (col.tooltip || col.sortKey) {
-                  return (
-                    <UpcomingTooltipHeader
-                      key={col.label}
-                      col={col}
-                      sortDir={col.sortKey === upcomingSortKey ? upcomingSortDir : null}
-                      onSort={col.sortKey ? () => handleUpcomingSort(col.sortKey!) : undefined}
-                    />
-                  )
+            {/* Desktop scrollable table */}
+            <div className="hidden lg:block overflow-x-auto scrollbar-styled">
+              <div className="min-w-fit">
+                <div className="flex items-center px-2">
+                  {UPCOMING_COLUMNS.map((col) => {
+                    if (col.tooltip || col.sortKey) {
+                      return (
+                        <UpcomingTooltipHeader
+                          key={col.label}
+                          col={col}
+                          sortDir={col.sortKey === upcomingSortKey ? upcomingSortDir : null}
+                          onSort={col.sortKey ? () => handleUpcomingSort(col.sortKey!) : undefined}
+                        />
+                      )
+                    }
+                    return (
+                      <div key={col.label} className={`${col.width} shrink-0 flex items-center gap-0.5 py-2 ${col.align}`}>
+                        <span className="text-body-xs text-wm-text-03" style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}>
+                          {col.labelKey ? t(col.labelKey) : col.label}
+                        </span>
+                      </div>
+                    )
+                  })}
+                </div>
+                {loading
+                  ? Array.from({ length: 3 }, (_, i) => <MarketSkeletonRow key={`skel-${i}`} index={i} />)
+                  : sortedUpcoming.map((item) => <UpcomingMarketRow key={item.id} item={item} onClick={() => navigate(`/premarket/${item.slug}`)} />)
                 }
-                return (
-                  <div key={col.label} className={`${col.width} shrink-0 flex items-center gap-0.5 py-2 ${col.align}`}>
-                    <span className="text-body-xs text-wm-text-03" style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}>
-                      {col.label}
-                    </span>
-                  </div>
-                )
-              })}
+              </div>
             </div>
-            {loading
-              ? Array.from({ length: 3 }, (_, i) => <MarketSkeletonRow key={`skel-${i}`} index={i} />)
-              : sortedUpcoming.map((item) => <UpcomingMarketRow key={item.id} item={item} onClick={() => navigate(`/premarket/${item.slug}`)} />)
-            }
+            {/* Mobile header */}
+            <div className="lg:hidden">
+              <MobileColumnHeader
+                leftLabel={t('home.colToken')}
+                rightLabel={t('home.colWatchers')}
+                sortDir={upcomingSortKey === 'watchers' ? upcomingSortDir : null}
+                onSort={() => handleUpcomingSort('watchers')}
+              />
+            </div>
+            {/* Mobile rows */}
+            <div className="lg:hidden">
+              {loading
+                ? Array.from({ length: 5 }, (_, i) => <MobileSkeletonRow key={`mskel-${i}`} index={i} />)
+                : sortedUpcoming.map((item) => <MobileUpcomingRow key={item.id} item={item} onClick={() => navigate(`/premarket/${item.slug}`)} />)
+              }
+            </div>
           </>
         )}
 
         {/* ── ENDED TABLE ──────────────────────────────────── */}
         {activeTab === 'ended' && (
           <>
-            {/* Column headers */}
-            <div className="flex items-center px-2">
-              {ENDED_COLUMNS.map((col) => {
-                if (col.tooltip || col.sortKey) {
-                  return (
-                    <EndedTooltipHeader
-                      key={col.label}
-                      col={col}
-                      sortDir={col.sortKey === endedSortKey ? endedSortDir : null}
-                      onSort={col.sortKey ? () => handleEndedSort(col.sortKey!) : undefined}
-                    />
-                  )
+            {/* Desktop scrollable table */}
+            <div className="hidden lg:block overflow-x-auto scrollbar-styled">
+              <div className="min-w-fit">
+                <div className="flex items-center px-2">
+                  {ENDED_COLUMNS.map((col) => {
+                    if (col.tooltip || col.sortKey) {
+                      return (
+                        <EndedTooltipHeader
+                          key={col.label}
+                          col={col}
+                          sortDir={col.sortKey === endedSortKey ? endedSortDir : null}
+                          onSort={col.sortKey ? () => handleEndedSort(col.sortKey!) : undefined}
+                        />
+                      )
+                    }
+                    return (
+                      <div key={col.label} className={`${col.width} shrink-0 flex items-center gap-0.5 py-2 ${col.align}`}>
+                        <span className="text-body-xs text-wm-text-03" style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}>
+                          {col.labelKey ? t(col.labelKey) : col.label}
+                        </span>
+                      </div>
+                    )
+                  })}
+                </div>
+                {loading
+                  ? Array.from({ length: 3 }, (_, i) => <MarketSkeletonRow key={`skel-${i}`} index={i} />)
+                  : sortedEnded.map((item) => <EndedMarketRow key={item.id} item={item} onClick={() => navigate(`/premarket/${item.slug}`)} />)
                 }
-                return (
-                  <div key={col.label} className={`${col.width} shrink-0 flex items-center gap-0.5 py-2 ${col.align}`}>
-                    <span className="text-body-xs text-wm-text-03" style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}>
-                      {col.label}
-                    </span>
-                  </div>
-                )
-              })}
+              </div>
             </div>
-
-            {/* Rows */}
-            {loading
-              ? Array.from({ length: 3 }, (_, i) => <MarketSkeletonRow key={`skel-${i}`} index={i} />)
-              : sortedEnded.map((item) => <EndedMarketRow key={item.id} item={item} onClick={() => navigate(`/premarket/${item.slug}`)} />)
-            }
+            {/* Mobile header */}
+            <div className="lg:hidden">
+              <MobileColumnHeader
+                leftLabel={t('home.colToken')}
+                rightLabel={t('home.colLastPrice')}
+                sortDir={endedSortKey === 'lastPrice' ? endedSortDir : null}
+                onSort={() => handleEndedSort('lastPrice')}
+              />
+            </div>
+            {/* Mobile rows */}
+            <div className="lg:hidden">
+              {loading
+                ? Array.from({ length: 5 }, (_, i) => <MobileSkeletonRow key={`mskel-${i}`} index={i} />)
+                : sortedEnded.map((item) => <MobileEndedRow key={item.id} item={item} onClick={() => navigate(`/premarket/${item.slug}`)} />)
+              }
+            </div>
 
             {!loading && sortedEnded.length === 0 && (
               <div className="py-16 text-center text-wm-text-03 text-body-sm">
                 {searchQuery || networkFilter !== 'all'
-                  ? 'No ended markets match your filters.'
-                  : 'No ended markets found.'}
+                  ? t('home.noEndedFiltered')
+                  : t('home.noEndedFound')}
               </div>
             )}
           </>

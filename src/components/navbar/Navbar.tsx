@@ -26,7 +26,11 @@
 import { useState, useRef, useEffect, useCallback, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { Link, useLocation } from 'react-router-dom'
-import { DownFill, QuestionLine, World2Line, MenuLine, CloseLine } from '@mingcute/react'
+import {
+  DownFill, QuestionLine, World2Line, MenuLine, CloseLine,
+  TransformationLine, ParkingFill, PigMoneyFill, Gift2Fill,
+  UserAdd2Fill, BillFill, ArrowRightUpLine,
+} from '@mingcute/react'
 import { cn } from '@/lib/utils'
 import ConnectWalletModal from './ConnectWalletModal'
 import UserMenuDropdown from './UserMenuDropdown'
@@ -114,7 +118,9 @@ function Logo() {
       className="flex items-center shrink-0 p-1.5 hover:opacity-90 transition-opacity outline-none"
       aria-label="Whales Market home"
     >
-      <img src="/logo.svg" alt="Whales Market" className="h-9 w-auto" />
+      {/* Mascot only on small screens, full logo on sm+ */}
+      <img src="/logo-mascot.svg" alt="Whales Market" className="sm:hidden size-9" />
+      <img src="/logo.svg" alt="Whales Market" className="hidden sm:block h-9 w-auto" />
     </Link>
   )
 }
@@ -490,126 +496,257 @@ function HamburgerButton({ isOpen, onClick }: { isOpen: boolean; onClick: () => 
       onClick={onClick}
       aria-label={isOpen ? 'Close menu' : 'Open menu'}
       className={cn(
-        'flex md:hidden items-center justify-center p-2 rounded-[var(--radius-lg,8px)] shrink-0',
+        'flex xl:hidden items-center justify-center p-2 rounded-[var(--radius-lg,8px)] shrink-0',
         'hover:bg-[var(--wm-bg-02)] active:bg-[var(--wm-bg-03)]',
         'transition-colors duration-150 cursor-pointer outline-none',
       )}
     >
       {isOpen ? (
-        <CloseLine className="size-6 text-[var(--wm-text-01)]" />
+        <CloseLine className="size-5 text-[var(--wm-text-01)]" />
       ) : (
-        <MenuLine className="size-6 text-[var(--wm-text-01)]" />
+        <MenuLine className="size-5 text-[var(--wm-text-01)]" />
       )}
     </button>
   )
 }
 
-// ─── Mobile Drawer (rendered via createPortal to escape page-fade-in) ────────
+// ─── Drawer menu groups (Figma: 40310:259073) ──────────────────────────────
+
+interface DrawerMenuItem {
+  label: string
+  href: string
+  icon: ReactNode
+}
+
+interface DrawerGroup {
+  title: string
+  items: DrawerMenuItem[]
+}
+
+const DRAWER_GROUPS: DrawerGroup[] = [
+  {
+    title: 'Markets',
+    items: [
+      { label: 'Pre-market', href: '/premarket', icon: <TransformationLine className="size-5" /> },
+      { label: 'Point-market', href: '/point-market', icon: <ParkingFill className="size-5" /> },
+    ],
+  },
+  {
+    title: 'Earn',
+    items: [
+      { label: 'Staking', href: '/earn', icon: <PigMoneyFill className="size-5" /> },
+      { label: 'Incentives', href: '/earn', icon: <Gift2Fill className="size-5" /> },
+      { label: 'Referral', href: '/earn', icon: <UserAdd2Fill className="size-5" /> },
+    ],
+  },
+  {
+    title: 'More',
+    items: [
+      { label: 'Dashboard', href: '/dashboard', icon: <BillFill className="size-5" /> },
+      { label: 'About Whales Market', href: '/resources', icon: <img src="/logo-mascot.svg" alt="" className="size-5" /> },
+    ],
+  },
+]
+
+// ─── Drawer social SVG icons ─────────────────────────────────────────────────
+
+function DrawerXIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className="size-4">
+      <path d="M8 2H1l8.26 11.01L1.45 22H4.1l6.39-7.35L16 22h7l-8.61-11.47L21.54 2h-2.65l-5.98 6.88L8 2Zm10 18L6 4h1l12 16h-1Z" />
+    </svg>
+  )
+}
+
+function DrawerDiscordIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className="size-4">
+      <path d="M19.27 5.33C17.94 4.71 16.5 4.26 15 4a.09.09 0 0 0-.07.03c-.18.33-.39.76-.53 1.09a16.09 16.09 0 0 0-4.8 0c-.14-.34-.36-.76-.54-1.09-.01-.02-.04-.03-.07-.03-1.5.26-2.93.71-4.27 1.33-.01 0-.02.01-.03.02-2.72 4.07-3.47 8.03-3.1 11.95 0 .02.01.04.03.05 1.8 1.32 3.53 2.12 5.24 2.65.03.01.06 0 .07-.02.4-.55.76-1.13 1.07-1.74.02-.04 0-.08-.04-.09-.57-.22-1.11-.48-1.64-.78-.04-.02-.04-.08-.01-.11.11-.08.22-.17.33-.25.02-.02.05-.02.07-.01 3.44 1.57 7.15 1.57 10.55 0 .02-.01.05-.01.07.01.11.09.22.17.33.26.04.03.04.09-.01.11-.52.31-1.07.56-1.64.78-.04.01-.05.06-.04.09.32.61.68 1.19 1.07 1.74.03.01.05.02.07.02 1.72-.53 3.45-1.33 5.24-2.65.02-.01.03-.03.03-.05.44-4.53-.73-8.46-3.1-11.95-.01-.01-.02-.02-.04-.02ZM8.52 14.91c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12 0 1.17-.84 2.12-1.89 2.12Zm6.97 0c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12 0 1.17-.83 2.12-1.89 2.12Z" />
+    </svg>
+  )
+}
+
+// ─── Mobile Drawer (Figma: 40310:259073 + 40310:248338) ─────────────────────
 
 function MobileDrawer({
   isOpen,
   onClose,
-  navItems,
   isActive,
-  t,
-  onConnectClick,
-  isConnected,
+  currentLang,
+  onLangSelect,
 }: {
   isOpen: boolean
   onClose: () => void
-  navItems: NavItemConfig[]
   isActive: (href: string) => boolean
-  t: (key: TranslationKey) => string
-  onConnectClick: () => void
-  isConnected: boolean
+  currentLang: string
+  onLangSelect: (code: string) => void
 }) {
+  const [langOpen, setLangOpen] = useState(false)
+  const langRef = useRef<HTMLDivElement>(null)
+
+  // Close lang dropup on outside click
+  useOutsideClick(langRef, () => setLangOpen(false))
+
   // Lock body scroll when open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
     } else {
       document.body.style.overflow = ''
+      setLangOpen(false)
     }
     return () => { document.body.style.overflow = '' }
   }, [isOpen])
 
   if (!isOpen) return null
 
+  const currentLangLabel = LANGUAGES.find((l) => l.code === currentLang)?.label ?? 'English'
+
   return createPortal(
-    <div className="fixed inset-0 z-50 md:hidden">
+    <div className="fixed inset-0 z-50 xl:hidden">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+        className="absolute inset-0 bg-black/60 animate-in fade-in duration-200"
         onClick={onClose}
       />
 
-      {/* Drawer panel — slide from left */}
+      {/* Drawer panel — Figma: bg-02, shadow-modal, slide from left */}
       <div
         className={cn(
           'absolute top-0 left-0 bottom-0 w-[280px]',
-          'bg-[var(--wm-bg-01)] border-r border-[var(--wm-border-01)]',
-          'flex flex-col',
+          'bg-[var(--wm-bg-02)] flex flex-col',
+          'shadow-[0_0_32px_rgba(0,0,0,0.2)]',
           'animate-in slide-in-from-left duration-250',
         )}
       >
-        {/* Drawer header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--wm-border-01)]">
-          <Link to="/" onClick={onClose} className="flex items-center shrink-0">
-            <img src="/logo.svg" alt="Whales Market" className="h-8 w-auto" />
+        {/* ── Header: Logo + Close ─────────────────────────────────── */}
+        <div className="flex items-center justify-between p-4 border-b border-wm-border-02">
+          <Link to="/" onClick={onClose} className="flex items-center justify-center p-0 shrink-0">
+            <img src="/logo-mascot.svg" alt="Whales Market" className="size-9" />
           </Link>
           <button
             onClick={onClose}
             aria-label="Close menu"
             className={cn(
-              'flex items-center justify-center p-2 rounded-full shrink-0',
-              'hover:bg-[var(--wm-bg-02)]',
+              'flex items-center justify-center p-2 rounded-lg shrink-0 rounded-full bg-[var(--wm-overlay-5)]',
+              'hover:bg-[var(--wm-overlay-10)]',
               'transition-colors duration-150 cursor-pointer outline-none',
             )}
           >
-            <CloseLine className="size-5 text-[var(--wm-text-02)]" />
+            <CloseLine className="size-4 text-[var(--wm-text-01)]" />
           </button>
         </div>
 
-        {/* Nav links */}
-        <nav className="flex flex-col py-2" aria-label="Mobile navigation">
-          {navItems.map((item) => {
-            const active = isActive(item.href)
-            return (
-              <Link
-                key={item.href}
-                to={item.href}
-                onClick={onClose}
-                className={cn(
-                  'flex items-center gap-3 px-5 py-3.5',
-                  'text-label-md transition-colors duration-150',
-                  active
-                    ? 'text-[var(--wm-text-green)] bg-[var(--wm-bg-02)]'
-                    : 'text-[var(--wm-text-01)] hover:bg-[var(--wm-bg-02)]',
-                )}
-              >
-                {t(item.labelKey)}
-              </Link>
-            )
-          })}
+        {/* ── Menu groups — scrollable ─────────────────────────────── */}
+        <nav className="flex-1 overflow-y-auto p-3 flex flex-col gap-2" aria-label="Mobile navigation">
+          {DRAWER_GROUPS.map((group) => (
+            <div key={group.title} className="flex flex-col gap-1 pb-4">
+              {/* Group title */}
+              <div className="px-3 py-0.5">
+                <span className="text-label-xs text-wm-text-03">{group.title}</span>
+              </div>
+              {/* Group items */}
+              {group.items.map((item) => {
+                const active = isActive(item.href)
+                return (
+                  <Link
+                    key={item.label}
+                    to={item.href}
+                    onClick={onClose}
+                    className={cn(
+                      'flex items-center gap-2 px-3 py-2 rounded-lg text-label-sm',
+                      'transition-colors duration-150',
+                      active
+                        ? 'bg-[var(--wm-bg-03)]'
+                        : 'hover:bg-[var(--wm-overlay-5)]',
+                    )}
+                  >
+                    <span className={cn('p-0.5 shrink-0', active ? 'text-[var(--wm-primary)]' : 'text-[var(--wm-text-01)]')}>
+                      {item.icon}
+                    </span>
+                    <span className={active ? 'text-[var(--wm-primary)]' : 'text-[var(--wm-text-01)]'}>
+                      {item.label}
+                    </span>
+                  </Link>
+                )
+              })}
+            </div>
+          ))}
         </nav>
 
-        {/* Bottom actions */}
-        <div className="mt-auto px-5 py-4 border-t border-[var(--wm-border-01)]">
-          {!isConnected && (
-            <button
-              onClick={() => { onConnectClick(); onClose() }}
-              className={cn(
-                'w-full flex items-center justify-center',
-                'h-10 px-4 py-2',
-                'bg-[var(--wm-bg-secondary)] text-[var(--wm-text-inv)]',
-                'rounded-[var(--radius-lg,8px)]',
-                'text-sm font-medium',
-                'transition-colors duration-150 cursor-pointer outline-none',
+        {/* ── Bottom: Stats ────────────────────────────────────────── */}
+        <div className="border-t border-wm-border-02 p-4 flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            <span className="text-body-xs text-wm-text-02">Total Vol</span>
+            <span className="text-body-xs text-wm-text-01">$5,375,932.81</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-body-xs text-wm-text-02">Vol 24h</span>
+            <span className="text-body-xs text-wm-text-01">$832,750.55</span>
+          </div>
+        </div>
+
+        {/* ── Bottom: Links + Social + Language ────────────────────── */}
+        <div className="border-t border-wm-border-02 p-4 flex flex-col gap-4">
+          {/* External links */}
+          <div className="flex items-center gap-4">
+            {['Docs', 'Dune', 'Link3'].map((label) => (
+              <a
+                key={label}
+                href="#"
+                className="flex items-center gap-0.5 text-body-xs text-wm-text-02 hover:text-wm-text-01 transition-colors"
+              >
+                {label}
+                <ArrowRightUpLine className="size-3.5 text-wm-text-03" />
+              </a>
+            ))}
+          </div>
+
+          {/* Social + Language */}
+          <div className="flex items-center">
+            {/* Social icons */}
+            <div className="flex flex-1 items-center gap-2">
+              <a
+                href="https://x.com/WhalesMarket" target="_blank" rel="noopener noreferrer"
+                className="flex items-center justify-center p-2 rounded-lg bg-[var(--wm-bg-02)] hover:bg-[var(--wm-overlay-10)] text-wm-text-02 hover:text-wm-text-01 transition-colors"
+              >
+                <DrawerXIcon />
+              </a>
+              <a
+                href="https://discord.gg/whalesmarket" target="_blank" rel="noopener noreferrer"
+                className="flex items-center justify-center p-2 rounded-lg bg-[var(--wm-bg-02)] hover:bg-[var(--wm-overlay-10)] text-wm-text-02 hover:text-wm-text-01 transition-colors"
+              >
+                <DrawerDiscordIcon />
+              </a>
+            </div>
+
+            {/* Language pill — dropup (reuses desktop LanguageDropdown) */}
+            <div ref={langRef} className="relative shrink-0">
+              <button
+                onClick={() => setLangOpen((v) => !v)}
+                className={cn(
+                  'flex items-center gap-1.5 pl-3 pr-2 py-2',
+                  'bg-[var(--wm-bg-03)] rounded-full',
+                  'hover:bg-[var(--wm-overlay-10)] transition-colors cursor-pointer outline-none',
+                )}
+              >
+                <span className="text-body-xs text-white">{currentLangLabel}</span>
+                <span className={cn('transition-transform duration-200', langOpen ? 'rotate-180' : '')}>
+                  <DownFill className="size-4 text-wm-text-03" />
+                </span>
+              </button>
+
+              {langOpen && (
+                <LanguageDropdown
+                  currentLang={currentLang}
+                  onSelect={onLangSelect}
+                  onClose={() => setLangOpen(false)}
+                  dropup
+                  hideScrollbar
+                />
               )}
-            >
-              {t('nav.connect')}
-            </button>
-          )}
+            </div>
+          </div>
         </div>
       </div>
     </div>,
@@ -735,7 +872,7 @@ export default function Navbar() {
         }}
       >
         {/* Inner container — max-w-[1440px], px-4 mobile / px-12 desktop, py-3 */}
-        <div className="flex items-center w-full max-w-[1440px] mx-auto px-4 md:px-12 py-3">
+        <div className="flex items-center w-full max-w-[1440px] mx-auto px-4 xl:px-12 py-3">
 
           {/* ── Left: hamburger (mobile) + logo + nav (desktop) ────── */}
           <div className="flex flex-1 items-center gap-2 min-w-0">
@@ -746,7 +883,7 @@ export default function Navbar() {
             <Logo />
 
             {/* Desktop nav — hidden on mobile */}
-            <nav className="hidden md:flex items-center" aria-label="Main navigation">
+            <nav className="hidden xl:flex items-center" aria-label="Main navigation">
               {NAV_ITEMS.map((item) => (
                 <NavItem
                   key={item.href}
@@ -759,12 +896,12 @@ export default function Navbar() {
           </div>
 
           {/* ── Right: wallet + utility ────────────────────────────── */}
-          <div className="flex items-center gap-1.5 md:gap-3 shrink-0">
+          <div className="flex items-center gap-1.5 xl:gap-3 shrink-0">
             {isConnected ? (
               /* ── Connected state ─────────────────────────────────── */
               <>
                 <ChainSelector chain={selectedChain} onSelect={handleChainSelect} />
-                <span className="hidden md:flex"><FeeBlock /></span>
+                <span className="hidden xl:flex"><FeeBlock /></span>
                 <BalanceBlock />
 
                 {/* Avatar + user menu dropdown */}
@@ -790,8 +927,8 @@ export default function Navbar() {
                   )}
                 </div>
 
-                <span className="hidden md:flex items-center"><VerticalDivider /></span>
-                <span className="hidden md:flex">
+                <span className="hidden xl:flex items-center"><VerticalDivider /></span>
+                <span className="hidden xl:flex">
                   <RoundIconBtn
                     label={t('tooltip.help')}
                     onClick={() => window.open('https://whales.market/blog/', '_blank', 'noopener,noreferrer')}
@@ -799,7 +936,7 @@ export default function Navbar() {
                   />
                 </span>
                 {/* Language selector — connected state, hidden on mobile */}
-                <div ref={langMenuRef} className="relative shrink-0 hidden md:flex">
+                <div ref={langMenuRef} className="relative shrink-0 hidden xl:flex">
                   <RoundIconBtn
                     label={t('tooltip.language')}
                     onClick={() => setShowLang((v) => !v)}
@@ -824,11 +961,11 @@ export default function Navbar() {
             ) : (
               /* ── Disconnected state (default) ────────────────────── */
               <>
-                <span className="hidden md:flex">
+                <span className="hidden xl:flex">
                   <ConnectButton onClick={() => setShowModal(true)} label={t('nav.connect')} />
                 </span>
                 {/* Language selector — disconnected state, hidden on mobile */}
-                <div ref={langMenuRef} className="relative shrink-0 hidden md:flex">
+                <div ref={langMenuRef} className="relative shrink-0 hidden xl:flex">
                   <RoundIconBtn
                     label={t('tooltip.language')}
                     onClick={() => setShowLang((v) => !v)}
@@ -860,11 +997,9 @@ export default function Navbar() {
       <MobileDrawer
         isOpen={drawerOpen}
         onClose={() => setDrawerOpen(false)}
-        navItems={NAV_ITEMS}
         isActive={isActive}
-        t={t}
-        onConnectClick={() => setShowModal(true)}
-        isConnected={isConnected}
+        currentLang={currentLang}
+        onLangSelect={handleLangSelect}
       />
 
       {/* ── Connect Wallet Modal ───────────────────────────────────── */}

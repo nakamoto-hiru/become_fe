@@ -21,7 +21,7 @@ const FaqRow = ({
   >
     {/* Question row */}
     <div className="flex items-center gap-4">
-      <span className="flex-1 text-heading-sm text-wm-text-01">
+      <span className="flex-1 text-label-md md:text-heading-sm text-wm-text-01">
         {item.question}
       </span>
 
@@ -44,7 +44,7 @@ const FaqRow = ({
     >
       {/* overflow-hidden clips content + padding when row collapses to 0 */}
       <div className="overflow-hidden">
-        <p className="text-body-md text-wm-text-02 max-w-[768px] pt-3">
+        <p className="text-body-sm md:text-body-md text-wm-text-02 max-w-[768px] pt-3">
           {item.answer}
         </p>
       </div>
@@ -76,8 +76,8 @@ const FaqSection = () => {
         <div className="py-4 md:py-6 flex flex-col gap-8 md:gap-16">
 
           {/* Title block */}
-          <div className="text-center max-w-[720px] mx-auto flex flex-col gap-4">
-            <h2 className="text-display-sm md:text-display-md lg:text-display-lg text-wm-text-01">
+          <div className="text-center max-w-[720px] mx-auto flex flex-col gap-2">
+            <h2 className="text-heading-md md:text-display-md lg:text-display-lg text-wm-text-01">
               {t('faq.title')}
             </h2>
             <p className="text-body-sm md:text-body-lg text-wm-text-02">

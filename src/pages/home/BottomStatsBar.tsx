@@ -15,6 +15,7 @@
  */
 
 import { bottomStats } from '@/mock-data/home'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 const TNUM = { fontFeatureSettings: "'lnum' 1, 'tnum' 1" } as const
 
@@ -128,8 +129,10 @@ const LINKS = [
 
 /* ── Component ─────────────────────────────────────────────────────────── */
 
-const BottomStatsBar = () => (
-  <div className="flex items-center gap-4 h-[44px]">
+const BottomStatsBar = () => {
+  const { t } = useLanguage()
+  return (
+  <div className="hidden md:flex items-center gap-4 h-[44px]">
     {/* ── Left: live data stats (flex-1) ─────────────────────────────── */}
     <div className="flex flex-1 items-center gap-4">
       {/* Live indicator: icon + text */}
@@ -138,13 +141,13 @@ const BottomStatsBar = () => (
           <LiveIcon />
         </span>
         <span className="text-label-xs text-wm-text-green" style={TNUM}>
-          LIVE DATA
+          {t('home.liveData')}
         </span>
       </div>
 
       {/* Total Vol */}
       <div className="flex items-center gap-1" style={TNUM}>
-        <span className="text-body-xs text-wm-text-02">Total Vol</span>
+        <span className="text-body-xs text-wm-text-02">{t('home.totalVol')}</span>
         <span className="text-body-xs text-wm-text-01">
           ${fmt(bottomStats.totalVol)}
         </span>
@@ -152,7 +155,7 @@ const BottomStatsBar = () => (
 
       {/* Vol 24h */}
       <div className="flex items-center gap-1" style={TNUM}>
-        <span className="text-body-xs text-wm-text-02">Vol 24h</span>
+        <span className="text-body-xs text-wm-text-02">{t('home.vol24h')}</span>
         <span className="text-body-xs text-wm-text-01">
           ${fmt(bottomStats.vol24h)}
         </span>
@@ -207,6 +210,7 @@ const BottomStatsBar = () => (
       </div>
     </div>
   </div>
-)
+  )
+}
 
 export default BottomStatsBar

@@ -83,8 +83,7 @@ function TradePanel() {
     <img
       src={ASSETS.tradePanel}
       alt="Whales Market trade panel preview"
-      className="relative shrink-0 select-none"
-      style={{ width: '392px', height: '488px' }}
+      className="relative shrink-0 select-none w-[60%] md:w-[392px] h-auto"
       draggable={false}
     />
   )
@@ -179,7 +178,7 @@ function HeroRightPanel() {
     <>
       <div
         className="group/play relative flex items-center justify-center shrink-0 rounded-[16px]"
-        style={{ width: 'clamp(400px, 45vw, 656px)', aspectRatio: '1 / 1' }}
+        style={{ width: 'clamp(280px, 90vw, 656px)', maxWidth: 'min(90vw, 656px)', aspectRatio: '1 / 1' }}
       >
         {/* Layer 1: Dot background SVG — CSS @keyframes embedded inside SVG.
             285 paths split into 5 groups (s1–s5), each group fades in/out with
@@ -239,7 +238,7 @@ function GetStartedButton({ label }: { label: string }) {
       className={cn(
         'group/btn relative flex items-center w-fit overflow-hidden',
         // Figma-exact padding and radius
-        'pl-6 pr-3 py-3 gap-2',
+        'pl-4 pr-2 py-2 gap-2 md:pl-6 md:pr-3 md:py-3 md:gap-2',
         'rounded-[var(--radius-2xl,12px)]',
         'text-label-lg',
         // Colors — inverted (white bg, dark text)
@@ -296,16 +295,20 @@ const HeroSection = () => {
 
       {/* ── Content ── */}
       <div
-        className="relative max-w-[1440px] mx-auto px-4 md:px-8 lg:px-12 py-8 md:py-0 flex flex-col lg:flex-row items-center gap-8 lg:gap-12"
-        style={{ minHeight: 'clamp(400px, 60vh, 656px)' }}
+        className={cn(
+          'relative max-w-[1440px] mx-auto px-4 md:px-8 xl:px-12',
+          'py-6 md:pb-0 md:pt-12',
+          'flex flex-col xl:flex-row items-center gap-5 xl:gap-12',
+        )}
+        style={{ minHeight: 'clamp(0px, 60vh, 656px)' }}
       >
         {/* Left — headline + description + CTA */}
-        <div className="flex-1 flex flex-col gap-8 lg:gap-16 min-w-0 lg:pr-16 text-center lg:text-left items-center lg:items-start">
+        <div className="flex-1 flex flex-col gap-6 p-4 md:p-0 md:gap-8 xl:gap-16 min-w-0 xl:pr-16 text-center xl:text-left items-center xl:items-start">
           <div className="flex flex-col gap-4 md:gap-6">
-            <h1 className="text-display-sm md:text-display-md lg:text-display-lg text-[var(--wm-text-01)]">
+            <h1 className="text-display-sm md:text-display-md lg:text-display-lg xl:text-display-lg text-[var(--wm-text-01)]">
               {t('hero.title')}
             </h1>
-            <p className="text-body-sm md:text-body-md lg:text-body-lg text-[var(--wm-text-02)] max-w-[672px]">
+            <p className="text-body-sm md:text-body-md lg:text-body-lg xl:text-body-lg text-[var(--wm-text-02)] max-w-[672px]">
               {t('hero.description')}
             </p>
           </div>
@@ -313,8 +316,8 @@ const HeroSection = () => {
           <GetStartedButton label={t('hero.cta')} />
         </div>
 
-        {/* Right — decorative illustration + play — hidden on mobile */}
-        <div className="hidden md:block">
+        {/* Right — decorative illustration + play — scales down on mobile */}
+        <div className="w-full flex justify-center md:w-auto">
           <HeroRightPanel />
         </div>
       </div>

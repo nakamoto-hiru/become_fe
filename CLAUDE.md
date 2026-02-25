@@ -222,7 +222,7 @@ Full market dashboard with 4 sections:
 - **Skeleton** — reusable shimmer component with opacity-40
 - **WhalesBadge** — tier badge component (Shrimp/Fish/Dolphin/Shark/Whale) with SVG icons
 - **Toast** — 6 types, auto-dismiss, action buttons
-- **i18n** — LanguageContext with 15 languages (EN, VI, ZH-CN, ZH-TW, ES, RU, FR, DE, JA, KO, PT, TR, ID, TH, AR), all sections translated
+- **i18n** — LanguageContext with 16 languages (EN, VI, ZH-CN, ZH-TW, ES, RU, FR, DE, JA, KO, PT, TR, ID, TH, AR, UK), all pages fully translated (Premarket + Home + Navbar + Footer)
 
 ### ✅ Completed — Design System
 - ~100+ CSS tokens in `src/index.css` (`@theme` block)
@@ -251,10 +251,15 @@ Full market dashboard with 4 sections:
 - **Tailwind v4 JIT + dynamic classes**: Arbitrary classes like `backdrop-blur-[16px]` in conditional expressions may not generate CSS. Use inline `style={{}}` as workaround.
 - **Preview tool dark screenshots**: JPEG compression makes dark UI appear all-black. Use Chrome browser or `preview_eval`/`preview_inspect` for verification.
 
-### 🔴 TODO — Day 3 Remaining (last coding day)
-1. **Responsive mobile for Home page** — add breakpoints to: TopMetricsBar, MarketSection (horizontal scroll or card layout), RecentActivities, BottomStatsBar
-2. **Polish & bug fixes** — cross-browser check, edge cases
-3. **Final push to GitHub** — clean commit history, full description
+### ✅ Completed — Responsive Layout
+- **Premarket page** — all 6 sections responsive (HeroSection, StatsSection, MarketTodaySection, HowToJoinSection, FaqSection, Footer)
+- **Home page** — TopMetricsBar horizontal scroll, MarketSection horizontal scroll with custom scrollbar, RecentActivities mobile card layout, BottomStatsBar hidden on mobile
+- **Navbar** — hamburger mobile drawer with all dropdowns
+
+### ✅ Completed — AI Showcase Page (`/ai-showcase`)
+- 14 screenshots sorted chronologically (Feb 23–25)
+- Responsive gallery grid (4→3→2→1 cols)
+- Lightbox with keyboard navigation (Esc/←/→)
 
 ### 📋 Day 4 — Presentation Day
 - Live demo to judges (BGK) — `npm run dev` → share screen

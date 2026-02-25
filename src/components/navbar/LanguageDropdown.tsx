@@ -28,14 +28,16 @@ import { LANGUAGES } from '@/mock-data/languages'
 // ─── Props ────────────────────────────────────────────────────────────────────
 
 interface Props {
-  currentLang: string
-  onSelect:    (code: string) => void
-  onClose:     () => void
+  currentLang:    string
+  onSelect:       (code: string) => void
+  onClose:        () => void
+  dropup?:        boolean   // Position above trigger (for mobile drawer)
+  hideScrollbar?: boolean   // Hide scrollbar completely (mobile)
 }
 
 // ─── LanguageDropdown ─────────────────────────────────────────────────────────
 
-export default function LanguageDropdown({ currentLang, onSelect, onClose }: Props) {
+export default function LanguageDropdown({ currentLang, onSelect, onClose, dropup, hideScrollbar }: Props) {
   const [query, setQuery]     = useState('')
   const [focused, setFocused] = useState(false)
   const [isAtBottom, setIsAtBottom] = useState(false)
@@ -83,13 +85,15 @@ export default function LanguageDropdown({ currentLang, onSelect, onClose }: Pro
     <div
       className={cn(
         // Shell — right-aligned, near the right edge of nav
-        'absolute top-[calc(100%+4px)] right-0 z-50',
+        'absolute right-0 z-50',
+        dropup ? 'bottom-[calc(100%+4px)]' : 'top-[calc(100%+4px)]',
         'w-[256px] max-h-[320px]',
         'bg-[var(--wm-bg-02)] rounded-[var(--radius-2xl,12px)]',
         'shadow-[0_0_32px_rgba(0,0,0,0.2)] overflow-hidden',
-        'flex flex-col',  // 'absolute' already creates a containing block — no 'relative' needed
+        'flex flex-col',
         // Enter animation
-        'animate-in fade-in zoom-in-95 duration-150 origin-top-right',
+        'animate-in fade-in zoom-in-95 duration-150',
+        dropup ? 'origin-bottom-right' : 'origin-top-right',
       )}
     >
       {/* ── Search row ───────────────────────────────────────────────────────── */}
@@ -156,7 +160,7 @@ export default function LanguageDropdown({ currentLang, onSelect, onClose }: Pro
       <div
         ref={listRef}
         onScroll={checkAtBottom}
-        className="flex-1 min-h-0 overflow-y-auto lang-scrollbar"
+        className={cn('flex-1 min-h-0 overflow-y-auto', hideScrollbar ? 'no-scrollbar' : 'lang-scrollbar')}
       >
         <div className="flex flex-col gap-1 px-3 py-2">
           {filtered.length > 0 ? (
@@ -169,7 +173,7 @@ export default function LanguageDropdown({ currentLang, onSelect, onClose }: Pro
                   onClick={() => handleSelect(lang.code)}
                   className={cn(
                     'flex items-center gap-2 w-full text-left',
-                    'px-2 py-1.5 rounded-[var(--radius-lg,8px)]',
+                    'px-2 py-2 rounded-[var(--radius-lg,8px)]',
                     'text-sm font-medium leading-5 text-[var(--wm-text-01)]',
                     'transition-colors duration-100 cursor-pointer outline-none',
                     isSelected

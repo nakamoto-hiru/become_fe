@@ -5,7 +5,7 @@ import BottomStatsBar from './BottomStatsBar'
 
 const HomePage = () => (
   <div className="min-h-screen bg-wm-bg-01">
-    <div className="max-w-[1440px] mx-auto px-12 py-4 gap-4 flex flex-col">
+    <div className="max-w-[1440px] mx-auto px-4 lg:px-12 py-4 gap-4 flex flex-col">
       <TopMetricsBar />
       <MarketSection />
       <RecentActivities />

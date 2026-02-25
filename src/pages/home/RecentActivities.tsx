@@ -3,6 +3,8 @@ import { recentActivities, type RecentActivity } from '@/mock-data/home'
 import { ArrowRightUpFill, Filter2Fill, DownFill, CheckFill } from '@mingcute/react'
 import { Button } from '@/components/Button'
 import { Skeleton } from '@/components/Skeleton'
+import { useLanguage } from '@/contexts/LanguageContext'
+import type { TranslationKey } from '@/i18n/translations'
 
 const TNUM = { fontFeatureSettings: "'lnum' 1, 'tnum' 1" } as const
 
@@ -172,7 +174,111 @@ const SkeletonRow = ({ index }: { index: number }) => (
   </div>
 )
 
+/* ── Mobile activity card — Figma node 44740:769576 ──────────────── */
+const MobileActivityRow = ({ a, isNew, t }: { a: RecentActivity; isNew: boolean; t: (key: TranslationKey) => string }) => {
+  const cardContent = (
+    <div
+      className="flex flex-col gap-3 py-4 border-t border-wm-border-01"
+      onClick={() => window.open(SOLSCAN_URL, '_blank', 'noopener,noreferrer')}
+    >
+      {/* Row 1: "Filled Order  Sell  🟢 GRASS"  +  "1m ago" */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-1 flex-1 min-w-0">
+          <span className="text-label-sm text-wm-text-01 whitespace-nowrap" style={TNUM}>
+            {a.orderType}
+          </span>
+          <span
+            className={`text-label-sm whitespace-nowrap ${
+              a.side === 'Buy' ? 'text-wm-text-green' : 'text-wm-text-danger'
+            }`}
+            style={TNUM}
+          >
+            {a.side}
+          </span>
+          {a.isRs && (
+            <span className="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full bg-[#eab308] text-[10px] font-medium leading-3 text-wm-text-inv uppercase" style={TNUM}>
+              RS
+            </span>
+          )}
+          <img src={a.tokenLogoUrl} alt={a.tokenName} className="size-4 rounded-full object-cover shrink-0 ml-1" />
+          <span className="text-label-sm text-wm-text-01" style={TNUM}>
+            {a.tokenName}
+          </span>
+        </div>
+        <span className="text-body-xs text-wm-text-03 shrink-0 ml-2" style={TNUM}>
+          {displayTime(a)}
+        </span>
+      </div>
+
+      {/* Row 2-3: Price + Amount/Collateral + Tx button */}
+      <div className="flex items-end justify-between">
+        <div className="flex flex-col gap-1 flex-1 min-w-0">
+          {/* Price */}
+          <div className="flex items-center gap-1">
+            <span className="text-body-xs text-wm-text-03" style={TNUM}>{t('home.price')}</span>
+            <span className="text-body-xs text-wm-text-01" style={TNUM}>
+              ${a.price.toFixed(4)}
+            </span>
+          </div>
+          {/* Amount / Collateral */}
+          <div className="flex items-center gap-1 flex-wrap">
+            <span className="text-body-xs text-wm-text-03" style={TNUM}>{t('home.amount')}</span>
+            <span className="text-body-xs text-wm-text-03" style={TNUM}>/</span>
+            <span className="text-body-xs text-wm-text-03" style={TNUM}>{t('home.collateral')}</span>
+            <span className="text-body-xs text-wm-text-01" style={TNUM}>
+              {fmt(a.amount)}
+            </span>
+            <span className="text-body-xs text-wm-text-03" style={TNUM}>/</span>
+            <span className="text-body-xs text-wm-text-01" style={TNUM}>
+              {fmt(a.collateral)}
+            </span>
+            <span className="text-body-xs text-wm-text-01" style={TNUM}>
+              USDC
+            </span>
+            <img src={a.collateralTokenLogoUrl} alt="" className="size-4 rounded-full object-cover shrink-0" />
+          </div>
+        </div>
+        {/* Tx button */}
+        <div className="flex items-center justify-center p-1.5 border border-wm-border-02 rounded-md shrink-0 ml-2">
+          <ArrowRightUpFill size={12} className="text-wm-text-03" />
+        </div>
+      </div>
+    </div>
+  )
+
+  return isNew ? (
+    <div className="recent-row-enter">
+      <div className="recent-row-inner">{cardContent}</div>
+    </div>
+  ) : (
+    <div>{cardContent}</div>
+  )
+}
+
+/* ── Mobile skeleton row ──────────────────────────────────────────── */
+const MobileSkeletonRow = ({ index }: { index: number }) => (
+  <div className="flex flex-col gap-3 py-4 border-t border-wm-border-01" style={{ animationDelay: `${index * 80}ms` }}>
+    <div className="flex items-center justify-between">
+      <div className="flex items-center gap-2">
+        <Skeleton w={60} h={20} />
+        <Skeleton w={24} h={20} />
+        <Skeleton w={16} h={16} circle />
+        <Skeleton w={40} h={20} />
+      </div>
+      <Skeleton w={36} h={16} />
+    </div>
+    <div className="flex items-end justify-between">
+      <div className="flex flex-col gap-1">
+        <Skeleton w={80} h={16} />
+        <Skeleton w={200} h={16} />
+      </div>
+      <Skeleton w={28} h={28} />
+    </div>
+  </div>
+)
+
 const RecentActivities = () => {
+  const { t } = useLanguage()
   const [showFilter, setShowFilter] = useState(false)
   const [sortKey, setSortKey] = useState<SortKey | null>(null)
   const [sortDir, setSortDir] = useState<SortDir>(null)
@@ -327,8 +433,9 @@ const RecentActivities = () => {
     <div className="flex flex-col pb-4">
       {/* Title bar — Figma: border-t, h-60px, "Recent Activities" 20/28 Medium */}
       <div className="flex items-center justify-between h-15">
-        <h2 className="text-heading-sm text-wm-text-01" style={TNUM}>
-          Recent Activities
+        <h2 className="text-label-md lg:text-heading-sm text-wm-text-01" style={TNUM}>
+          <span className="lg:hidden">{t('home.recentTrades')}</span>
+          <span className="hidden lg:inline">{t('home.recentActivities')}</span>
         </h2>
 
         {/* Filter button + dropdown — relative wrapper */}
@@ -343,7 +450,7 @@ const RecentActivities = () => {
               <Filter2Fill className="size-4 text-wm-text-01" />
             </div>
             <span className="text-label-sm text-wm-text-01 whitespace-nowrap" style={TNUM}>
-              Filter
+              {t('home.filter')}
             </span>
             {isFiltered && (
               <span className="flex items-center justify-center size-5 rounded-full bg-wm-bg-primary text-[10px] font-medium leading-none text-wm-text-01">
@@ -363,20 +470,21 @@ const RecentActivities = () => {
               {/* Type filter group */}
               <div className="flex flex-col gap-1 p-2 border-b border-wm-border-02">
                 <div className="flex items-center px-2 py-1">
-                  <span className="text-label-xs text-wm-text-03" style={TNUM}>Type</span>
+                  <span className="text-label-xs text-wm-text-03" style={TNUM}>{t('home.filterType')}</span>
                 </div>
                 {TYPE_OPTIONS.map((opt) => {
                   const isSelected = draftType === opt.id
+                  const typeLabels: Record<FilterType, TranslationKey> = { all: 'home.filterAll', Open: 'home.filterOpen', Filled: 'home.filterFilled' }
                   return (
                     <button
                       key={opt.id}
                       onClick={() => setDraftType(opt.id)}
-                      className={`flex gap-2 items-center overflow-clip px-2 py-1.5 rounded-lg w-full transition-colors cursor-pointer ${
+                      className={`flex gap-2 items-center overflow-clip px-2 py-2 rounded-lg w-full transition-colors cursor-pointer ${
                         isSelected ? 'bg-wm-bg-03' : 'hover:bg-wm-bg-03'
                       }`}
                     >
                       <span className="flex-1 min-w-0 text-left text-label-sm text-wm-text-01" style={TNUM}>
-                        {opt.label}
+                        {t(typeLabels[opt.id])}
                       </span>
                       {isSelected && (
                         <div className="flex items-center p-0.5 shrink-0">
@@ -391,20 +499,21 @@ const RecentActivities = () => {
               {/* Side filter group */}
               <div className="flex flex-col gap-1 p-2">
                 <div className="flex items-center px-2 py-1">
-                  <span className="text-label-xs text-wm-text-03" style={TNUM}>Side</span>
+                  <span className="text-label-xs text-wm-text-03" style={TNUM}>{t('home.filterSide')}</span>
                 </div>
                 {SIDE_OPTIONS.map((opt) => {
                   const isSelected = draftSide === opt.id
+                  const sideLabels: Record<FilterSide, TranslationKey> = { all: 'home.filterAll', Buy: 'home.filterBuy', Sell: 'home.filterSell' }
                   return (
                     <button
                       key={opt.id}
                       onClick={() => setDraftSide(opt.id)}
-                      className={`flex gap-2 items-center overflow-clip px-2 py-1.5 rounded-lg w-full transition-colors cursor-pointer ${
+                      className={`flex gap-2 items-center overflow-clip px-2 py-2 rounded-lg w-full transition-colors cursor-pointer ${
                         isSelected ? 'bg-wm-bg-03' : 'hover:bg-wm-bg-03'
                       }`}
                     >
                       <span className="flex-1 min-w-0 text-left text-label-sm text-wm-text-01" style={TNUM}>
-                        {opt.label}
+                        {t(sideLabels[opt.id])}
                       </span>
                       {isSelected && (
                         <div className="flex items-center p-0.5 shrink-0">
@@ -425,7 +534,7 @@ const RecentActivities = () => {
                   onClick={handleReset}
                   className="flex-1"
                 >
-                  Reset
+                  {t('home.reset')}
                 </Button>
                 <Button
                   variant="primary"
@@ -434,7 +543,7 @@ const RecentActivities = () => {
                   onClick={handleApply}
                   className="flex-1"
                 >
-                  Apply
+                  {t('home.apply')}
                 </Button>
               </div>
             </div>
@@ -442,24 +551,27 @@ const RecentActivities = () => {
         </div>
       </div>
 
-      {/* Table header — Figma: px-2, py-2, text-body-xs text-wm-text-03 */}
-      <div className="flex items-center px-2">
-        {COLUMNS.map((col) => (
-          <div
-            key={col.label}
-            className={`${col.width} shrink-0 flex items-center gap-0.5 py-2 ${col.align || ''} ${col.sortKey ? 'cursor-pointer select-none' : ''}`}
-            onClick={col.sortKey ? () => handleSort(col.sortKey!) : undefined}
-          >
-            <span className="text-body-xs text-wm-text-03" style={TNUM}>
-              {col.label}
-            </span>
-            {col.sortKey && <SortIcon dir={sortKey === col.sortKey ? sortDir : null} />}
+      {/* ── Desktop scrollable table ──────────────────────────────── */}
+      <div className="hidden lg:block overflow-x-auto scrollbar-styled">
+        <div className="min-w-fit">
+          {/* Table header */}
+          <div className="flex items-center px-2">
+            {COLUMNS.map((col) => (
+              <div
+                key={col.label}
+                className={`${col.width} shrink-0 flex items-center gap-0.5 py-2 ${col.align || ''} ${col.sortKey ? 'cursor-pointer select-none' : ''}`}
+                onClick={col.sortKey ? () => handleSort(col.sortKey!) : undefined}
+              >
+                <span className="text-body-xs text-wm-text-03" style={TNUM}>
+                  {col.label}
+                </span>
+                {col.sortKey && <SortIcon dir={sortKey === col.sortKey ? sortDir : null} />}
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
 
-      {/* Rows — min-h prevents layout shift when filtering reduces row count */}
-      <div className="min-h-[520px]">
+          {/* Desktop rows */}
+          <div className="min-h-[520px]">
       {loading
         ? Array.from({ length: 10 }, (_, i) => <SkeletonRow key={`skel-${i}`} index={i} />)
         : sortedData.map((a) => {
@@ -550,6 +662,18 @@ const RecentActivities = () => {
           )
         })
       }
+          </div>
+        </div>
+      </div>
+
+      {/* ── Mobile card rows ─────────────────────────────────────── */}
+      <div className="lg:hidden">
+        {loading
+          ? Array.from({ length: 6 }, (_, i) => <MobileSkeletonRow key={`mskel-${i}`} index={i} />)
+          : sortedData.map((a) => (
+              <MobileActivityRow key={a.id} a={a} isNew={a.id === newId} t={t} />
+            ))
+        }
       </div>
     </div>
   )

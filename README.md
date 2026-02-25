@@ -73,16 +73,16 @@ ai-showcase/        # AI prompt screenshots used during build
 | Dashboard | `/dashboard` | Placeholder | Under Development |
 | Earn | `/earn` | Placeholder | Under Development |
 | Resources | `/resources` | Placeholder | Under Development |
-| AI Showcase | `/ai-showcase` | Done | *(Demo-only, outside product scope)* — Gallery of AI workflow screenshots with lightbox viewer, keyboard navigation, responsive grid |
+| AI Showcase | `/ai-showcase` | Done | *(Demo-only, outside product scope)* — Gallery of 14 AI workflow screenshots (chronological), lightbox viewer, keyboard navigation, responsive grid |
 | Under Development | various | Done | *(Demo-only, outside product scope)* — Shared placeholder page with animated whale mascot, shown for routes not yet implemented |
 
 ### Completed Features
 
 - **Navbar** — Sticky with glassmorphism on scroll, 4 dropdowns (Chain, Language, Earn, Resources), wallet connect modal with 6 networks x 5 wallets, user menu, hamburger mobile drawer
 - **Real-time Simulation** — Price random-walk, volume ticks, watcher count updates via custom hooks (`useSimulatedStats`, `useSimulatedMarkets`, `useSimulatedHomeMarkets`); live trade generator in RecentActivities with weighted random intervals
-- **i18n** — 15 languages fully translated (EN, VI, ZH-CN, ZH-TW, ES, RU, FR, DE, JA, KO, PT, TR, ID, TH, AR)
+- **i18n** — 16 languages fully translated across all pages (EN, VI, ZH-CN, ZH-TW, ES, RU, FR, DE, JA, KO, PT, TR, ID, TH, AR, UK)
 - **Design System** — 100+ CSS tokens, full typography scale (display-lg to body-xs), semantic color tokens
-- **Responsive** — Mobile/tablet/desktop breakpoints for all Premarket sections + Navbar hamburger menu
+- **Responsive** — Mobile/tablet/desktop breakpoints for all pages (Premarket + Home + Navbar hamburger + AI Showcase gallery)
 - **Animations** — Slot-machine digit reels, coin float keyframes, page transitions, accordion grid-rows, flash green/red on value changes, skeleton shimmer, recent trade slide-in (grid 0fr→1fr), radar pulse LIVE DATA icon
 
 ---
@@ -91,10 +91,12 @@ ai-showcase/        # AI prompt screenshots used during build
 
 Screenshots and conversation links of notable AI-assisted workflows are collected in [`/ai-showcase`](./ai-showcase/).
 
-Highlights include:
-- Initial project setup prompt
-- Figma → component conversion workflow
-- Iterative feedback loops with AI
+14 screenshots collected over 3 development days (Feb 23–25), sorted chronologically. Highlights include:
+- Initial project setup & Figma MCP integration
+- Figma → component conversion workflow with design token extraction
+- Iterative feedback loops with AI for pixel accuracy
+- Real-time simulation hooks and animation implementation
+- i18n rollout across 16 languages
 
 ---
 

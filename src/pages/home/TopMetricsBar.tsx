@@ -6,6 +6,8 @@ import {
   type TopMetricAltcoinSeason,
   type TopMetricSettlement,
 } from '@/mock-data/home'
+import { useLanguage } from '@/contexts/LanguageContext'
+import type { TranslationKey } from '@/i18n/translations'
 
 /* ── Chart data types & generator ────────────────────────────────────── */
 
@@ -36,7 +38,7 @@ const VOLUME_CHART_DATA: ChartPoint[] = (() => {
 
 /* ── Shared card wrapper ───────────────────────────────────────────── */
 const MetricCard = ({ children }: { children: React.ReactNode }) => (
-  <div className="w-[324px] shrink-0 flex flex-col gap-2 bg-wm-overlay-3 rounded-[10px] pt-4 pb-5 px-5 overflow-hidden">
+  <div className="w-[327px] shrink-0 lg:w-auto lg:shrink lg:flex-1 lg:min-w-0 flex flex-col gap-2 bg-wm-overlay-3 rounded-[10px] pt-4 pb-5 px-5 overflow-hidden">
     {children}
   </div>
 )
@@ -178,9 +180,9 @@ const InteractiveVolumeChart = () => {
 }
 
 /* ── 1. Volume card ────────────────────────────────────────────────── */
-const VolumeCard = ({ data }: { data: TopMetricVolume }) => (
+const VolumeCard = ({ data, t }: { data: TopMetricVolume; t: (key: TranslationKey) => string }) => (
   <MetricCard>
-    <MetricLabel text={data.label} />
+    <MetricLabel text={t('home.volume')} />
     <div className="flex flex-col gap-2 h-[88px]">
       <div className="flex items-baseline gap-1">
         <p
@@ -214,7 +216,7 @@ const getSentiment = (score: number): string => {
 }
 
 
-const FearGreedCard = ({ data }: { data: TopMetricFearGreed }) => {
+const FearGreedCard = ({ data, t }: { data: TopMetricFearGreed; t: (key: TranslationKey) => string }) => {
   const [score, setScore] = useState(data.score)
 
   /* Real-time simulation: nudge score ±1–2 every 8–12s */
@@ -244,9 +246,9 @@ const FearGreedCard = ({ data }: { data: TopMetricFearGreed }) => {
 
   return (
     <MetricCard>
-      <MetricLabel text={data.label} />
-      {/* Data container — Figma: h-88 w-284 relative */}
-      <div className="relative h-[88px] w-[284px]">
+      <MetricLabel text={t('home.fearGreed')} />
+      {/* Data container — Figma: h-88 w-full relative */}
+      <div className="relative h-[88px] w-full">
         {/* Gauge SVG — exact Figma export, 144×72, centered at top-16px */}
         <svg
           viewBox="0 0 144 144"
@@ -305,7 +307,7 @@ const FearGreedCard = ({ data }: { data: TopMetricFearGreed }) => {
 }
 
 /* ── 3. Altcoin Season card — real-time simulation ─────────────────── */
-const AltcoinSeasonCard = ({ data }: { data: TopMetricAltcoinSeason }) => {
+const AltcoinSeasonCard = ({ data, t }: { data: TopMetricAltcoinSeason; t: (key: TranslationKey) => string }) => {
   const [score, setScore] = useState(data.score)
 
   /* Real-time simulation: nudge score ±1–3 every 10–15s, mean-revert toward 65 */
@@ -325,7 +327,7 @@ const AltcoinSeasonCard = ({ data }: { data: TopMetricAltcoinSeason }) => {
 
   return (
     <MetricCard>
-      <MetricLabel text={data.label} />
+      <MetricLabel text={t('home.altcoinSeason')} />
       <div className="flex flex-col gap-4">
         <div className="flex items-center">
           <p
@@ -445,7 +447,7 @@ const toDigits = (n: number): number[] =>
   String(n).split('').map(Number)
 
 /* ── 4. Next Settlement card ───────────────────────────────────────── */
-const SettlementCard = ({ data }: { data: TopMetricSettlement }) => {
+const SettlementCard = ({ data, t }: { data: TopMetricSettlement; t: (key: TranslationKey) => string }) => {
   const [countdown, setCountdown] = useState({ d: 0, h: 0, m: 0, s: 0 })
 
   useEffect(() => {
@@ -483,7 +485,7 @@ const SettlementCard = ({ data }: { data: TopMetricSettlement }) => {
 
   return (
     <MetricCard>
-      <MetricLabel text={data.label} />
+      <MetricLabel text={t('home.nextSettlement')} />
       <div className="flex flex-col gap-4 items-center justify-center">
         {/* Token info — Figma: image-slot 44px, image 36px, gap-8 */}
         <div className="flex items-center gap-2 w-full justify-center">
@@ -545,21 +547,24 @@ const SettlementCard = ({ data }: { data: TopMetricSettlement }) => {
 }
 
 /* ── TopMetricsBar ─────────────────────────────────────────────────── */
-const TopMetricsBar = () => (
-  <div className="flex gap-4 py-2">
-    {topMetrics.map((m, i) => {
-      switch (m.type) {
-        case 'volume':
-          return <VolumeCard key={i} data={m} />
-        case 'fearGreed':
-          return <FearGreedCard key={i} data={m} />
-        case 'altcoinSeason':
-          return <AltcoinSeasonCard key={i} data={m} />
-        case 'settlement':
-          return <SettlementCard key={i} data={m} />
-      }
-    })}
-  </div>
-)
+const TopMetricsBar = () => {
+  const { t } = useLanguage()
+  return (
+    <div className="flex gap-4 py-2 overflow-x-auto scrollbar-styled">
+      {topMetrics.map((m, i) => {
+        switch (m.type) {
+          case 'volume':
+            return <VolumeCard key={i} data={m} t={t} />
+          case 'fearGreed':
+            return <FearGreedCard key={i} data={m} t={t} />
+          case 'altcoinSeason':
+            return <AltcoinSeasonCard key={i} data={m} t={t} />
+          case 'settlement':
+            return <SettlementCard key={i} data={m} t={t} />
+        }
+      })}
+    </div>
+  )
+}
 
 export default TopMetricsBar

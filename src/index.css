@@ -618,9 +618,6 @@
   --width-wm-6xl: var(--wm-w-6xl);
   --width-wm-7xl: var(--wm-w-7xl);
 
-  /* ── Custom breakpoints ───────────────────────────────────────────── */
-  --breakpoint-3xl: 1920px;
-
   /* ── Font families ────────────────────────────────────────────────── */
   --font-sans: var(--wm-font-sans);
   --font-mono: var(--wm-font-mono);
@@ -771,6 +768,36 @@ body {
   font-weight: var(--wm-fw-regular);
 }
 
+/* ── Scrollbar hide utility ───────────────────────────────────────── */
+@utility scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ── Styled thin scrollbar — dark theme, rounded thumb ───────────── */
+@utility scrollbar-styled {
+  scrollbar-width: thin;
+  scrollbar-color: var(--wm-bg-03) transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--wm-bg-03);
+    border-radius: 9999px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--wm-text-03);
+  }
+}
+
 /* ── Dot-grid background for hero ─────────────────────────────────── */
 .dot-grid {
   background-image: radial-gradient(circle, var(--wm-bg-03) 1px, transparent 1px);
@@ -859,6 +886,10 @@ body {
   border-radius: 9999px;
 }
 .lang-scrollbar                           { scrollbar-width: thin; scrollbar-color: var(--wm-bg-03) transparent; }
+
+/* Hide scrollbar completely (used in mobile dropup) */
+.no-scrollbar::-webkit-scrollbar          { display: none; }
+.no-scrollbar                             { scrollbar-width: none; }
 
 /* ── Hero: Coin float animations ───────────────────────────────────────── */
 /* GPU-friendly: transform only. Three unique paths for natural, non-synced feel. */

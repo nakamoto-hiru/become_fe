@@ -29,7 +29,7 @@ interface ShowcaseImage {
   alt: string
 }
 
-const SHOWCASE_IMAGES: ShowcaseImage[] = Array.from({ length: 11 }, (_, i) => ({
+const SHOWCASE_IMAGES: ShowcaseImage[] = Array.from({ length: 14 }, (_, i) => ({
   id: i,
   src: `/assets/ai-showcase/showcase-${String(i).padStart(2, '0')}.png`,
   alt: `AI Showcase ${i + 1}`,
@@ -244,28 +244,6 @@ export default function AiShowcasePage() {
             step powered by Claude Code.
           </p>
 
-          {/* Stats */}
-          <div className="flex items-center gap-8 mt-4">
-            <div className="flex flex-col items-center gap-1">
-              <span className="text-display-sm text-wm-primary">100+</span>
-              <span className="text-body-xs text-wm-text-03">CSS Tokens</span>
-            </div>
-            <div className="w-px h-10 bg-wm-border-01" />
-            <div className="flex flex-col items-center gap-1">
-              <span className="text-display-sm text-wm-primary">10+</span>
-              <span className="text-body-xs text-wm-text-03">Components</span>
-            </div>
-            <div className="w-px h-10 bg-wm-border-01" />
-            <div className="flex flex-col items-center gap-1">
-              <span className="text-display-sm text-wm-primary">0</span>
-              <span className="text-body-xs text-wm-text-03">Console Errors</span>
-            </div>
-            <div className="w-px h-10 bg-wm-border-01" />
-            <div className="flex flex-col items-center gap-1">
-              <span className="text-display-sm text-wm-primary">5</span>
-              <span className="text-body-xs text-wm-text-03">Languages</span>
-            </div>
-          </div>
         </div>
       </section>
 

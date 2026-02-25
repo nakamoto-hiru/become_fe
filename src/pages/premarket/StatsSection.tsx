@@ -7,6 +7,10 @@
  *   cubic-bezier → looks like a reel spinning fast then snapping to a stop.
  *   Each digit within a number settles 130ms after the previous (left → right).
  *   Each stat column starts 90ms after the previous column.
+ *
+ * Responsive sizes (Figma):
+ *   mobile/tablet (<1024): 28px/36px digits, 18px reel width
+ *   desktop (≥1024):       48px/64px digits, 30px reel width
  */
 
 import { useEffect, useRef, useState } from 'react'
@@ -14,12 +18,33 @@ import { useLanguage } from '@/contexts/LanguageContext'
 import { useSimulatedStats } from '@/hooks/useSimulatedStats'
 
 // ─── Reel geometry ─────────────────────────────────────────────────────────────
-const DIGIT_H = 64    // visible window height (px) — one digit visible at a time
-const REEL_W  = 30    // reel width (px) — snug fit for 48px tabular digits (~28px wide)
-const REPEATS = 4     // extra full 0-9 rotations before the final digit
+const REPEATS = 4 // extra full 0-9 rotations before the final digit
+
+// Responsive size presets — Figma sm: 28/36, lg: 48/64
+const SIZES = {
+  sm: { digitH: 36, fontSize: 28, reelW: 18 },
+  lg: { digitH: 64, fontSize: 48, reelW: 30 },
+} as const
+
+type ReelSize = (typeof SIZES)[keyof typeof SIZES]
+
+// ─── useIsLg — matchMedia hook for ≥ 1024px ────────────────────────────────
+function useIsLg() {
+  const [isLg, setIsLg] = useState(() =>
+    typeof window !== 'undefined' ? window.matchMedia('(min-width: 1024px)').matches : false,
+  )
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)')
+    const handler = (e: MediaQueryListEvent) => setIsLg(e.matches)
+    mq.addEventListener('change', handler)
+    setIsLg(mq.matches)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
+  return isLg
+}
 
 // ─── SlotReel ─────────────────────────────────────────────────────────────────
-// One vertical reel. Clips to DIGIT_H × REEL_W.
+// One vertical reel. Clips to digitH × reelW.
 // On `started`, CSS transition snaps the strip to the target digit row.
 
 function SlotReel({
@@ -27,23 +52,23 @@ function SlotReel({
   started,
   duration = 1700,
   delay = 0,
+  size,
 }: {
-  target:   number    // final digit 0–9
-  started:  boolean
+  target: number // final digit 0–9
+  started: boolean
   duration?: number
-  delay?:   number
+  delay?: number
+  size: ReelSize
 }) {
-  // Strip layout: rows 0,1,...,9 repeated (REPEATS+1) times.
-  // We aim for the LAST copy's occurrence of `target`.
-  //   finalY = -(REPEATS × 10 + target) × DIGIT_H
+  const { digitH, fontSize, reelW } = size
   const totalRows = (REPEATS + 1) * 10
-  const finalY    = -((REPEATS * 10 + target) * DIGIT_H)
+  const finalY = -((REPEATS * 10 + target) * digitH)
 
   return (
     <div
       style={{
-        height: DIGIT_H,
-        width:  REEL_W,
+        height: digitH,
+        width: reelW,
         overflow: 'hidden',
         position: 'relative',
         flexShrink: 0,
@@ -51,8 +76,7 @@ function SlotReel({
     >
       <div
         style={{
-          transform:  started ? `translateY(${finalY}px)` : 'translateY(0px)',
-          // Fast spin → smooth decelerate → slight overshoot snap
+          transform: started ? `translateY(${finalY}px)` : 'translateY(0px)',
           transition: started
             ? `transform ${duration}ms cubic-bezier(0.12, 0.9, 0.28, 1) ${delay}ms`
             : 'none',
@@ -63,14 +87,14 @@ function SlotReel({
           <div
             key={i}
             style={{
-              height:         DIGIT_H,
-              lineHeight:     `${DIGIT_H}px`,
-              fontSize:       48,
-              fontWeight:     500,
-              textAlign:      'center',
-              color:          'var(--wm-text-01)',
-              letterSpacing:  '-1px',
-              userSelect:     'none',
+              height: digitH,
+              lineHeight: `${digitH}px`,
+              fontSize,
+              fontWeight: 500,
+              textAlign: 'center',
+              color: 'var(--wm-text-01)',
+              letterSpacing: '-1px',
+              userSelect: 'none',
               fontVariantNumeric: 'tabular-nums',
             }}
           >
@@ -90,21 +114,23 @@ function SlotNumber({
   suffix,
   started,
   colDelay = 0,
+  size,
 }: {
   targetStr: string
-  suffix:    string
-  started:   boolean
+  suffix: string
+  started: boolean
   colDelay?: number
+  size: ReelSize
 }) {
   const digits = targetStr.split('').map(Number)
 
   return (
     <div
       style={{
-        display:         'flex',
-        alignItems:      'center',
-        justifyContent:  'center',
-        gap:             0,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 0,
       }}
     >
       {digits.map((d, i) => (
@@ -113,21 +139,21 @@ function SlotNumber({
           target={d}
           started={started}
           duration={1700}
-          // Digits settle left → right, 130ms apart
           delay={colDelay + i * 130}
+          size={size}
         />
       ))}
 
       {suffix && (
         <span
           style={{
-            fontSize:      48,
-            fontWeight:    500,
-            lineHeight:    `${DIGIT_H}px`,
-            color:         'var(--wm-text-01)',
+            fontSize: size.fontSize,
+            fontWeight: 500,
+            lineHeight: `${size.digitH}px`,
+            color: 'var(--wm-text-01)',
             letterSpacing: '-1px',
-            marginLeft:    2,
-            userSelect:    'none',
+            marginLeft: 2,
+            userSelect: 'none',
           }}
         >
           {suffix}
@@ -143,14 +169,16 @@ function StatItem({
   raw,
   label,
   colDelay,
+  size,
 }: {
-  raw:      string
-  label:    string
+  raw: string
+  label: string
   colDelay: number
+  size: ReelSize
 }) {
-  const m         = raw.match(/^(\d+)(.*)$/)
+  const m = raw.match(/^(\d+)(.*)$/)
   const targetStr = m?.[1] ?? '0'
-  const suffix    = m?.[2] ?? ''
+  const suffix = m?.[2] ?? ''
 
   const [started, setStarted] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
@@ -159,7 +187,9 @@ function StatItem({
     const el = ref.current
     if (!el) return
     const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting && !started) setStarted(true) },
+      ([entry]) => {
+        if (entry.isIntersecting && !started) setStarted(true)
+      },
       { threshold: 0.35 },
     )
     obs.observe(el)
@@ -167,15 +197,16 @@ function StatItem({
   }, [started])
 
   return (
-    <div ref={ref} className="flex flex-[1_0_0] flex-col gap-5 items-center text-center">
+    <div ref={ref} className="flex flex-[1_0_0] flex-col gap-2 items-center text-center">
       <SlotNumber
         targetStr={targetStr}
         suffix={suffix}
         started={started}
         colDelay={colDelay}
+        size={size}
       />
       <p
-        className="text-label-lg text-[var(--wm-text-02)] w-full"
+        className="text-label-sm lg:text-label-lg text-[var(--wm-text-02)] w-full"
         style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}
       >
         {label}
@@ -188,13 +219,13 @@ function StatItem({
 
 function StatDivider() {
   return (
-    <div className="shrink-0 flex items-center justify-center" style={{ width: 1, height: 88 }}>
+    <div
+      className="hidden md:flex shrink-0 items-center justify-center"
+      style={{ width: 1, height: 88 }}
+    >
       <div
         className="w-px h-full"
-        style={{
-          background:
-            'linear-gradient(to bottom, var(--wm-border-02) 0%, var(--wm-border-02) 30%, var(--wm-border-02) 70%, var(--wm-border-02) 100%)',
-        }}
+        style={{ backgroundColor: 'var(--wm-border-02)' }}
       />
     </div>
   )
@@ -205,16 +236,26 @@ function StatDivider() {
 const StatsSection = () => {
   const { t } = useLanguage()
   const { stats } = useSimulatedStats()
+  const isLg = useIsLg()
+  const size = isLg ? SIZES.lg : SIZES.sm
 
   return (
     <section className="border-t border-b border-wm-border-02">
-      <div className="max-w-[1440px] mx-auto px-4 md:px-12 py-8 md:py-16">
-        <div className="flex flex-col md:flex-row items-start justify-between gap-6 md:gap-0">
+      <div className="max-w-[1440px] mx-auto px-4 lg:px-12 py-8 lg:py-16">
+        {/* Mobile: 2×2 grid */}
+        <div className="grid grid-cols-2 gap-6 md:hidden">
           {stats.map(({ raw, labelKey }, i) => (
-            <div key={labelKey} className="flex items-center flex-1 w-full md:w-auto">
-              {i > 0 && <div className="hidden md:flex"><StatDivider /></div>}
-              {/* key={raw} forces remount when value changes → slot animation replays */}
-              <StatItem key={raw} raw={raw} label={t(labelKey)} colDelay={i * 90} />
+            <StatItem key={raw} raw={raw} label={t(labelKey)} colDelay={i * 90} size={size} />
+          ))}
+        </div>
+        {/* Tablet+Desktop: horizontal row with dividers */}
+        <div className="hidden md:flex items-center justify-between gap-0">
+          {stats.map(({ raw, labelKey }, i) => (
+            <div key={labelKey} className="flex items-center flex-1">
+              {i > 0 && <StatDivider />}
+              <div className="flex-1">
+                <StatItem key={raw} raw={raw} label={t(labelKey)} colDelay={i * 90} size={size} />
+              </div>
             </div>
           ))}
         </div>

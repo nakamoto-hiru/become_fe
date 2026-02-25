@@ -127,7 +127,7 @@ export default function UserMenuDropdown({
                 onClick={handleCopyAddress}
                 aria-label="Copy address"
                 className={cn(
-                  'p-0.5 transition-colors duration-150 cursor-pointer outline-none',
+                  'mt-0.5 p-0.5 transition-colors duration-150 cursor-pointer outline-none',
                   copied
                     ? 'text-[var(--wm-text-green)]'
                     : 'text-[var(--wm-icon-03)] hover:text-[var(--wm-icon-01)]',
@@ -173,7 +173,7 @@ export default function UserMenuDropdown({
             onClick={onClose}
             className={cn(
               'flex items-center gap-2 w-full',
-              'px-2 py-1.5 rounded-[var(--radius-lg,8px)]',
+              'px-2 py-2 rounded-[var(--radius-lg,8px)]',
               'text-sm font-medium leading-5 text-[var(--wm-text-01)]',
               'hover:bg-[var(--wm-bg-03)] active:bg-[var(--wm-bg-04)]',
               'transition-colors duration-150 cursor-pointer outline-none',
@@ -203,7 +203,7 @@ export default function UserMenuDropdown({
           onClick={() => { onDisconnect(); onClose() }}
           className={cn(
             'flex items-center gap-2 w-full',
-            'px-2 py-1.5 rounded-[var(--radius-lg,8px)]',
+            'px-2 py-2 rounded-[var(--radius-lg,8px)]',
             'text-sm font-medium leading-5 text-[var(--wm-text-danger)]',
             'hover:bg-[var(--wm-bg-danger-muted-5)] active:bg-[var(--wm-bg-danger-muted-10)]',
             'transition-colors duration-150 cursor-pointer outline-none',
