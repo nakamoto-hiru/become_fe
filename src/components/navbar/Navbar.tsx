@@ -962,6 +962,14 @@ export default function Navbar() {
               /* ── Disconnected state (default) ────────────────────── */
               <>
                 <ConnectButton onClick={() => setShowModal(true)} label={t('nav.connect')} />
+                <span className="hidden xl:flex items-center"><VerticalDivider /></span>
+                <span className="hidden xl:flex">
+                  <RoundIconBtn
+                    label={t('tooltip.help')}
+                    onClick={() => window.open('https://whales.market/blog/', '_blank', 'noopener,noreferrer')}
+                    icon={<QuestionLine className="size-full text-[var(--wm-text-02)]" />}
+                  />
+                </span>
                 {/* Language selector — disconnected state, hidden on mobile */}
                 <div ref={langMenuRef} className="relative shrink-0 hidden xl:flex">
                   <RoundIconBtn
