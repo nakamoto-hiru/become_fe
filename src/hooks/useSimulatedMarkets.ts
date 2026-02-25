@@ -42,11 +42,15 @@ export function useSimulatedMarkets() {
   const liveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const upcomingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  // ── Live market tick ──────────────────────────────────────────────────
+  // ── Live market tick — updates ONE random row per tick ────────────────
 
   const tickLive = useCallback(() => {
-    setLiveData((prev) =>
-      prev.map((item, i) => {
+    setLiveData((prev) => {
+      // Pick a single random row to update
+      const idx = Math.floor(Math.random() * prev.length)
+      return prev.map((item, i) => {
+        if (i !== idx) return item
+
         const initial = initialLiveRef.current[i]
 
         // Price: random walk ±0.5-2%, capped at ±20% from initial
@@ -70,17 +74,21 @@ export function useSimulatedMarkets() {
           totalVolume: newVolume,
           volumeChange: newVolumeChange,
         }
-      }),
-    )
+      })
+    })
 
-    liveTimerRef.current = setTimeout(tickLive, 4000 + Math.random() * 2000)
+    // Shorter interval since only 1 row updates per tick
+    liveTimerRef.current = setTimeout(tickLive, 2000 + Math.random() * 2000)
   }, [])
 
-  // ── Upcoming market tick ──────────────────────────────────────────────
+  // ── Upcoming market tick — updates ONE random row per tick ────────────
 
   const tickUpcoming = useCallback(() => {
-    setUpcomingData((prev) =>
-      prev.map((item) => {
+    setUpcomingData((prev) => {
+      const idx = Math.floor(Math.random() * prev.length)
+      return prev.map((item, i) => {
+        if (i !== idx) return item
+
         const watcherBump = Math.floor(rand(1, 15))
         const backerBump = Math.random() < 0.2 ? 1 : 0
 
@@ -89,10 +97,10 @@ export function useSimulatedMarkets() {
           watchers: item.watchers + watcherBump,
           backersExtra: item.backersExtra + backerBump,
         }
-      }),
-    )
+      })
+    })
 
-    upcomingTimerRef.current = setTimeout(tickUpcoming, 10000 + Math.random() * 5000)
+    upcomingTimerRef.current = setTimeout(tickUpcoming, 6000 + Math.random() * 4000)
   }, [])
 
   // ── Mount / cleanup ───────────────────────────────────────────────────
