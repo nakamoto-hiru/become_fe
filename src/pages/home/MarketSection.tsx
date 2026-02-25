@@ -11,7 +11,7 @@ import {
 } from '@/mock-data/home'
 import { useSimulatedHomeMarkets } from '@/hooks/useSimulatedHomeMarkets'
 import WhalesBadge from '@/components/WhalesBadge'
-import { Tooltip } from '@/components/Tooltip'
+import { TooltipPortal } from '@/components/Tooltip'
 import { SearchLine, Filter2Fill, DownFill, CheckFill, CloseLine } from '@mingcute/react'
 import { Skeleton } from '@/components/Skeleton'
 import { useLanguage } from '@/contexts/LanguageContext'
@@ -434,10 +434,12 @@ const MarketRow = ({ item, onClick }: { item: MarketListItem; onClick?: () => vo
 const SettleTimeHeader = ({ col }: { col: ColDef }) => {
   const { t } = useLanguage()
   const [hovered, setHovered] = useState(false)
+  const anchorRef = useRef<HTMLDivElement>(null)
 
   return (
     <div
-      className={`${col.width} shrink-0 flex items-center gap-0.5 py-2 ${col.align} relative`}
+      ref={anchorRef}
+      className={`${col.width} shrink-0 flex items-center gap-0.5 py-2 ${col.align}`}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -447,9 +449,10 @@ const SettleTimeHeader = ({ col }: { col: ColDef }) => {
       >
         {col.labelKey ? t(col.labelKey) : col.label}
       </span>
-      <Tooltip
+      <TooltipPortal
         content={settleTooltipContent}
         visible={hovered}
+        anchorRef={anchorRef}
         arrowSide="bottom"
         multiline
       />
@@ -659,10 +662,12 @@ const UpcomingTooltipHeader = ({ col, sortDir, onSort }: {
   const { t } = useLanguage()
   const [hovered, setHovered] = useState(false)
   const tooltipContent = UPCOMING_TOOLTIPS[col.label]
+  const anchorRef = useRef<HTMLDivElement>(null)
 
   return (
     <div
-      className={`${col.width} shrink-0 flex items-center gap-0.5 py-2 ${col.align} relative ${
+      ref={anchorRef}
+      className={`${col.width} shrink-0 flex items-center gap-0.5 py-2 ${col.align} ${
         col.sortKey ? 'cursor-pointer select-none group/sort' : ''
       }`}
       onMouseEnter={() => setHovered(true)}
@@ -681,9 +686,10 @@ const UpcomingTooltipHeader = ({ col, sortDir, onSort }: {
       </span>
       {col.sortKey && <SortIcon dir={sortDir} />}
       {tooltipContent && (
-        <Tooltip
+        <TooltipPortal
           content={tooltipContent}
           visible={hovered}
+          anchorRef={anchorRef}
           arrowSide="bottom"
           multiline
         />
@@ -836,10 +842,12 @@ const EndedTooltipHeader = ({ col, sortDir, onSort }: {
   const { t } = useLanguage()
   const [hovered, setHovered] = useState(false)
   const tooltipContent = ENDED_TOOLTIPS[col.label]
+  const anchorRef = useRef<HTMLDivElement>(null)
 
   return (
     <div
-      className={`${col.width} shrink-0 flex items-center gap-0.5 py-2 ${col.align} relative ${
+      ref={anchorRef}
+      className={`${col.width} shrink-0 flex items-center gap-0.5 py-2 ${col.align} ${
         col.sortKey ? 'cursor-pointer select-none group/sort' : ''
       }`}
       onMouseEnter={() => setHovered(true)}
@@ -858,7 +866,7 @@ const EndedTooltipHeader = ({ col, sortDir, onSort }: {
       </span>
       {col.sortKey && <SortIcon dir={sortDir} />}
       {tooltipContent && (
-        <Tooltip content={tooltipContent} visible={hovered} arrowSide="bottom" multiline />
+        <TooltipPortal content={tooltipContent} visible={hovered} anchorRef={anchorRef} arrowSide="bottom" multiline />
       )}
     </div>
   )

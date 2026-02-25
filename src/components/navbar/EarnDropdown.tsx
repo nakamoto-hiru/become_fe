@@ -17,7 +17,7 @@
 import { Link } from 'react-router-dom'
 import { type ComponentType } from 'react'
 import { cn } from '@/lib/utils'
-import { PigMoneyFill, Gift2Fill, UserAdd2Fill, ArrowRightLine } from '@mingcute/react'
+import { BillFill, PigMoneyFill, Gift2Fill, UserAdd2Fill, ArrowRightLine } from '@mingcute/react'
 
 // ─── Items config ─────────────────────────────────────────────────────────────
 
@@ -30,6 +30,13 @@ interface EarnItem {
 }
 
 const EARN_ITEMS: EarnItem[] = [
+  {
+    id:          'dashboard',
+    label:       'Dashboard',
+    description: 'Track your portfolio.',
+    href:        '/dashboard',
+    Icon:        BillFill,
+  },
   {
     id:          'staking',
     label:       'Staking',

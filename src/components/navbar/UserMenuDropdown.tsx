@@ -25,6 +25,7 @@
  */
 
 import { type ComponentType, useState, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import {
   Copy2Line,
@@ -48,16 +49,16 @@ export interface UserMenuDropdownProps {
 }
 
 type NavItemDef =
-  | { id: string; labelKey: string; type: 'icon';  Icon: ComponentType<{ className?: string }> }
-  | { id: string; labelKey: string; type: 'image'; imgSrc: string }
+  | { id: string; labelKey: string; href: string; type: 'icon';  Icon: ComponentType<{ className?: string }> }
+  | { id: string; labelKey: string; href: string; type: 'image'; imgSrc: string }
 
 // ─── Nav items ────────────────────────────────────────────────────────────────
 
 const NAV_ITEMS: NavItemDef[] = [
-  { id: 'dashboard',  labelKey: 'menu.dashboard',  type: 'icon',  Icon: BillFill                         },
-  { id: 'staking',    labelKey: 'menu.staking',    type: 'icon',  Icon: PigMoneyFill                     },
-  { id: 'incentives', labelKey: 'menu.incentives', type: 'image', imgSrc: '/assets/incentive-token.svg'  },
-  { id: 'referral',   labelKey: 'menu.referral',   type: 'icon',  Icon: UserAdd2Fill                     },
+  { id: 'dashboard',  labelKey: 'menu.dashboard',  href: '/dashboard',      type: 'icon',  Icon: BillFill                         },
+  { id: 'staking',    labelKey: 'menu.staking',    href: '/earn/staking',   type: 'icon',  Icon: PigMoneyFill                     },
+  { id: 'incentives', labelKey: 'menu.incentives', href: '/earn/incentives', type: 'image', imgSrc: '/assets/incentive-token.svg'  },
+  { id: 'referral',   labelKey: 'menu.referral',   href: '/earn/referral',  type: 'icon',  Icon: UserAdd2Fill                     },
 ]
 
 // ─── UserMenuDropdown ─────────────────────────────────────────────────────────
@@ -168,8 +169,9 @@ export default function UserMenuDropdown({
       {/* ── Section 2: Nav items ─────────────────────────────────────── */}
       <div className="flex flex-col gap-1 p-2 border-b border-[var(--wm-border-02)]">
         {NAV_ITEMS.map((item) => (
-          <button
+          <Link
             key={item.id}
+            to={item.href}
             onClick={onClose}
             className={cn(
               'flex items-center gap-2 w-full',
@@ -193,7 +195,7 @@ export default function UserMenuDropdown({
               )}
             </span>
             <span className="flex-1 text-left">{t(item.labelKey as Parameters<typeof t>[0])}</span>
-          </button>
+          </Link>
         ))}
       </div>
 
