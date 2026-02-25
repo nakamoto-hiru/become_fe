@@ -65,11 +65,23 @@ ai-showcase/        # AI prompt screenshots used during build
 
 ## Pages
 
-| Page | Route | Status |
-|---|---|---|
-| — | — | — |
+| Page | Route | Status | Description |
+|---|---|---|---|
+| Home | `/` | Done | Market listing dashboard — top metrics bar (24h vol, Fear & Greed gauge, Altcoin season, countdown), Live/Upcoming/Ended market tabs, token table with sparkline charts, recent activities feed, bottom stats bar |
+| Premarket Landing | `/premarket` | Done | Anchor page — hero section with CTA + decorative trade panel + video modal, slot-machine stats animation, live/upcoming market tables with real-time price simulation, how-to-join buy/sell steps with video background, 7-item FAQ accordion, footer |
+| Market Detail | `/premarket/:slug` | Placeholder | Under Development page with whale mascot + CTA back to Premarket |
+| Dashboard | `/dashboard` | Placeholder | Under Development |
+| Earn | `/earn` | Placeholder | Under Development |
+| Resources | `/resources` | Placeholder | Under Development |
 
-> Pages will be updated as the build progresses.
+### Completed Features
+
+- **Navbar** — Sticky with glassmorphism on scroll, 4 dropdowns (Chain, Language, Earn, Resources), wallet connect modal with 6 networks x 5 wallets, user menu, hamburger mobile drawer
+- **Real-time Simulation** — Price random-walk, volume ticks, watcher count updates via custom hooks (`useSimulatedStats`, `useSimulatedMarkets`)
+- **i18n** — 15 languages fully translated (EN, VI, ZH-CN, ZH-TW, ES, RU, FR, DE, JA, KO, PT, TR, ID, TH, AR, UK)
+- **Design System** — 100+ CSS tokens, full typography scale (display-lg to body-xs), semantic color tokens
+- **Responsive** — Mobile/tablet/desktop breakpoints for all Premarket sections + Navbar hamburger menu
+- **Animations** — Slot-machine digit reels, coin float keyframes, page transitions, accordion grid-rows, flash green/red on value changes
 
 ---
 
