@@ -961,9 +961,7 @@ export default function Navbar() {
             ) : (
               /* ── Disconnected state (default) ────────────────────── */
               <>
-                <span className="hidden xl:flex">
-                  <ConnectButton onClick={() => setShowModal(true)} label={t('nav.connect')} />
-                </span>
+                <ConnectButton onClick={() => setShowModal(true)} label={t('nav.connect')} />
                 {/* Language selector — disconnected state, hidden on mobile */}
                 <div ref={langMenuRef} className="relative shrink-0 hidden xl:flex">
                   <RoundIconBtn
