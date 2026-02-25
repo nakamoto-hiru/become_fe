@@ -39,7 +39,7 @@ import { LANGUAGES } from '@/mock-data/languages'
 import { CHAINS } from '@/mock-data/chains'
 import type { Chain } from '@/mock-data/chains'
 import { useLanguage } from '@/contexts/LanguageContext'
-import type { TranslationKey } from '@/i18n/translations'
+import { TRANSLATIONS, type TranslationKey } from '@/i18n/translations'
 
 // ─── Nav items config ─────────────────────────────────────────────────────────
 
@@ -679,20 +679,22 @@ export default function Navbar() {
     const prevLabel = LANGUAGES.find((l) => l.code === prevCode)?.label ?? prevCode
     setCurrentLang(code)   // context handles localStorage
     setShowLang(false)
+    // Toast always in English (default) so user can read regardless of new lang
+    const en = TRANSLATIONS['en']!
     toast.push({
       type:    'success',
       title:   `Language: ${newLabel}`,
-      body:    t('toast.langUpdated'),
+      body:    en['toast.langUpdated'] ?? 'Interface language updated.',
       actions: [
         {
-          label:   t('toast.revert'),
+          label:   en['toast.revert'] ?? 'Revert',
           variant: 'secondary',
           onClick: () => {
             setCurrentLang(prevCode)
             toast.push({
               type:  'neutral',
               title: `Language: ${prevLabel}`,
-              body:  t('toast.langReverted'),
+              body:  en['toast.langReverted'] ?? 'Reverted to previous language.',
             })
           },
         },
