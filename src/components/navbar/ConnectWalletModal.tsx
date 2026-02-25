@@ -191,8 +191,8 @@ export default function ConnectWalletModal({ onClose, onConnect, initialNetworkI
         {/* ── Body ────────────────────────────────────────────────────── */}
         <div className="flex flex-col gap-6 items-center w-full">
 
-          {/* Network selector tabs */}
-          <div className="flex items-center w-full border border-[var(--wm-border-02)] rounded-[var(--radius-xl,10px)] p-1 gap-1">
+          {/* Network selector tabs — horizontally scrollable on mobile */}
+          <div className="flex items-center w-full border border-[var(--wm-border-02)] rounded-[var(--radius-xl,10px)] p-1 gap-1 overflow-x-auto scrollbar-hide">
             {NETWORKS.map((network) => {
               const isActive = network.id === selectedNetwork.id
               return (
@@ -200,7 +200,8 @@ export default function ConnectWalletModal({ onClose, onConnect, initialNetworkI
                   key={network.id}
                   onClick={() => handleNetworkSelect(network)}
                   className={cn(
-                    'flex flex-1 items-center justify-center gap-2',
+                    'flex items-center justify-center gap-2 shrink-0',
+                    'sm:flex-1',
                     'h-11 px-3 py-3 rounded-[var(--radius-lg,8px)]',
                     'text-sm font-medium text-[var(--wm-text-01)]',
                     'transition-all duration-150 cursor-pointer outline-none',
@@ -259,7 +260,7 @@ export default function ConnectWalletModal({ onClose, onConnect, initialNetworkI
                     disabled={!!connectingId}
                     className={cn(
                       'group flex items-center gap-4 p-4 text-left',
-                      'w-[calc(50%-8px)]',
+                      'w-full sm:w-[calc(50%-8px)]',
                       'border rounded-[var(--radius-2xl,12px)]',
                       'transition-all duration-150 cursor-pointer outline-none',
                       isConnecting
