@@ -55,7 +55,7 @@ export default function UnderDevelopmentPage() {
         <Button
           variant="secondary"
           size="md"
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/premarket')}
         >
           See what's working
         </Button>
