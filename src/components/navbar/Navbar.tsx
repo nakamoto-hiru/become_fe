@@ -347,8 +347,9 @@ function Tooltip({ label, children }: { label: string; children: ReactNode }) {
 // ─── Fee block ───────────────────────────────────────────────────────────────
 
 function FeeBlock() {
+  const { t } = useLanguage()
   return (
-    <Tooltip label="XWhales balance">
+    <Tooltip label={t('tooltip.xwhalesBalance')}>
       <div
         className={cn(
           'flex items-center gap-1.5 h-9 px-2 rounded-[var(--radius-lg,8px)] shrink-0',
@@ -377,8 +378,9 @@ function FeeBlock() {
 // ─── Balance block ───────────────────────────────────────────────────────────
 
 function BalanceBlock() {
+  const { t } = useLanguage()
   return (
-    <Tooltip label="Wallet Balance">
+    <Tooltip label={t('tooltip.walletBalance')}>
       <div
         className={cn(
           'flex items-center h-9 gap-1.5 rounded-[var(--radius-lg,8px)] shrink-0',
@@ -680,17 +682,17 @@ export default function Navbar() {
     toast.push({
       type:    'success',
       title:   `Language: ${newLabel}`,
-      body:    'Interface language updated.',
+      body:    t('toast.langUpdated'),
       actions: [
         {
-          label:   'Revert',
+          label:   t('toast.revert'),
           variant: 'secondary',
           onClick: () => {
             setCurrentLang(prevCode)
             toast.push({
               type:  'neutral',
               title: `Language: ${prevLabel}`,
-              body:  'Reverted to previous language.',
+              body:  t('toast.langReverted'),
             })
           },
         },
@@ -703,8 +705,8 @@ export default function Navbar() {
     setShowUserMenu(false)
     localStorage.removeItem('wm_connected')
     toast.push({
-      title: 'Wallet disconnected',
-      body:  "You've successfully disconnected your wallet.",
+      title: t('toast.walletDisconnected'),
+      body:  t('toast.walletDisconnectedBody'),
     })
   }
 
@@ -789,7 +791,7 @@ export default function Navbar() {
                 <span className="hidden md:flex items-center"><VerticalDivider /></span>
                 <span className="hidden md:flex">
                   <RoundIconBtn
-                    label="Help"
+                    label={t('tooltip.help')}
                     onClick={() => window.open('https://whales.market/blog/', '_blank', 'noopener,noreferrer')}
                     icon={<QuestionLine className="size-full text-[var(--wm-text-02)]" />}
                   />
@@ -797,7 +799,7 @@ export default function Navbar() {
                 {/* Language selector — connected state, hidden on mobile */}
                 <div ref={langMenuRef} className="relative shrink-0 hidden md:flex">
                   <RoundIconBtn
-                    label="Language"
+                    label={t('tooltip.language')}
                     onClick={() => setShowLang((v) => !v)}
                     icon={
                       <World2Line
@@ -826,7 +828,7 @@ export default function Navbar() {
                 {/* Language selector — disconnected state, hidden on mobile */}
                 <div ref={langMenuRef} className="relative shrink-0 hidden md:flex">
                   <RoundIconBtn
-                    label="Language"
+                    label={t('tooltip.language')}
                     onClick={() => setShowLang((v) => !v)}
                     icon={
                       <World2Line

@@ -15,6 +15,7 @@
 import { useState, useEffect } from 'react'
 import { CloseFill } from '@mingcute/react'
 import { cn } from '@/lib/utils'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -97,6 +98,7 @@ export interface ConnectWalletModalProps {
 }
 
 export default function ConnectWalletModal({ onClose, onConnect, initialNetworkId }: ConnectWalletModalProps) {
+  const { t } = useLanguage()
   const [selectedNetwork, setSelectedNetwork] = useState<NetworkDef>(
     () => NETWORKS.find((n) => n.id === initialNetworkId) ?? NETWORKS[0],
   )
@@ -166,7 +168,7 @@ export default function ConnectWalletModal({ onClose, onConnect, initialNetworkI
             className="text-lg font-medium leading-7 text-[var(--wm-text-01)]"
             style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}
           >
-            Connect Wallet
+            {t('modal.connectWallet')}
           </h2>
 
           <button

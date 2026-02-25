@@ -36,6 +36,7 @@ import {
   ExitDoorLine,
 } from '@mingcute/react'
 import { TooltipPortal } from '@/components/Tooltip'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -47,16 +48,16 @@ export interface UserMenuDropdownProps {
 }
 
 type NavItemDef =
-  | { id: string; label: string; type: 'icon';  Icon: ComponentType<{ className?: string }> }
-  | { id: string; label: string; type: 'image'; imgSrc: string }
+  | { id: string; labelKey: string; type: 'icon';  Icon: ComponentType<{ className?: string }> }
+  | { id: string; labelKey: string; type: 'image'; imgSrc: string }
 
 // ─── Nav items ────────────────────────────────────────────────────────────────
 
 const NAV_ITEMS: NavItemDef[] = [
-  { id: 'dashboard',  label: 'Dashboard',  type: 'icon',  Icon: BillFill                         },
-  { id: 'staking',    label: 'Staking',    type: 'icon',  Icon: PigMoneyFill                     },
-  { id: 'incentives', label: 'Incentives', type: 'image', imgSrc: '/assets/incentive-token.svg'  },
-  { id: 'referral',   label: 'Referral',   type: 'icon',  Icon: UserAdd2Fill                     },
+  { id: 'dashboard',  labelKey: 'menu.dashboard',  type: 'icon',  Icon: BillFill                         },
+  { id: 'staking',    labelKey: 'menu.staking',    type: 'icon',  Icon: PigMoneyFill                     },
+  { id: 'incentives', labelKey: 'menu.incentives', type: 'image', imgSrc: '/assets/incentive-token.svg'  },
+  { id: 'referral',   labelKey: 'menu.referral',   type: 'icon',  Icon: UserAdd2Fill                     },
 ]
 
 // ─── UserMenuDropdown ─────────────────────────────────────────────────────────
@@ -68,6 +69,7 @@ export default function UserMenuDropdown({
   onClose,
 }: UserMenuDropdownProps) {
 
+  const { t } = useLanguage()
   const [copied, setCopied] = useState(false)
   const copyTimerRef        = useRef<ReturnType<typeof setTimeout> | null>(null)
   const copyBtnRef          = useRef<HTMLDivElement>(null)
@@ -137,7 +139,7 @@ export default function UserMenuDropdown({
                 }
               </button>
               <TooltipPortal
-                content="Copied!"
+                content={t('tooltip.copied')}
                 visible={copied}
                 anchorRef={copyBtnRef}
                 arrowSide="bottom"
@@ -152,7 +154,7 @@ export default function UserMenuDropdown({
             className="inline-flex items-center gap-0 border-b border-[var(--wm-border-02)] w-fit group outline-none cursor-pointer"
           >
             <span className="text-xs leading-4 text-[var(--wm-text-03)] whitespace-nowrap group-hover:text-[var(--wm-text-01)] transition-colors duration-150">
-              Open in Explorer
+              {t('menu.openExplorer')}
             </span>
             {/* Arrow slot — p-[2px], icon size-6 (24px) */}
             <span className="p-0.5 text-[var(--wm-icon-03)] group-hover:text-[var(--wm-icon-01)] transition-colors duration-150">
@@ -190,7 +192,7 @@ export default function UserMenuDropdown({
                 />
               )}
             </span>
-            <span className="flex-1 text-left">{item.label}</span>
+            <span className="flex-1 text-left">{t(item.labelKey as Parameters<typeof t>[0])}</span>
           </button>
         ))}
       </div>
@@ -211,7 +213,7 @@ export default function UserMenuDropdown({
           <span className="p-0.5 shrink-0 text-[var(--wm-icon-danger)]">
             <ExitDoorLine className="size-4" />
           </span>
-          <span className="flex-1 text-left">Disconnect</span>
+          <span className="flex-1 text-left">{t('menu.disconnect')}</span>
         </button>
       </div>
 
