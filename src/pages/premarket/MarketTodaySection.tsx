@@ -325,25 +325,25 @@ const MarketTodaySection = () => {
   const { liveData, upcomingData } = useSimulatedMarkets()
 
   return (
-    <section className="py-12 bg-wm-bg-01">
+    <section className="py-8 md:py-12 bg-wm-bg-01">
       <FlashStyles />
-      <div className="max-w-[1440px] mx-auto px-12 py-6">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-12 py-4 md:py-6">
 
         {/* Title block */}
-        <div className="text-center mb-16 max-w-[720px] mx-auto flex flex-col gap-4">
+        <div className="text-center mb-8 md:mb-16 max-w-[720px] mx-auto flex flex-col gap-4">
           <h2
-            className="text-display-lg text-wm-text-01"
+            className="text-display-sm md:text-display-md lg:text-display-lg text-wm-text-01"
             style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}
           >
             {t('market.title')}
           </h2>
-          <p className="text-body-lg text-wm-text-02">
+          <p className="text-body-sm md:text-body-lg text-wm-text-02">
             {t('market.desc')}
           </p>
         </div>
 
-        {/* Cards */}
-        <div className="flex gap-8">
+        {/* Cards — stack vertically on mobile/tablet, side by side on desktop */}
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
           <LiveCard navigate={navigate} t={t} markets={liveData} />
           <UpcomingCard navigate={navigate} t={t} markets={upcomingData} />
         </div>

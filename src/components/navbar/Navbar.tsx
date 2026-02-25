@@ -24,8 +24,9 @@
  */
 
 import { useState, useRef, useEffect, useCallback, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import { Link, useLocation } from 'react-router-dom'
-import { DownFill, QuestionLine, World2Line } from '@mingcute/react'
+import { DownFill, QuestionLine, World2Line, MenuLine, CloseLine } from '@mingcute/react'
 import { cn } from '@/lib/utils'
 import ConnectWalletModal from './ConnectWalletModal'
 import UserMenuDropdown from './UserMenuDropdown'
@@ -67,7 +68,7 @@ const NAV_ITEMS: NavItemConfig[] = [
 function useAnimatedPanel(open: boolean, delay = 150) {
   const [rendered, setRendered] = useState(false)
   const [exiting, setExiting]   = useState(false)
-  const timerRef = useRef<ReturnType<typeof setTimeout>>()
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   useEffect(() => {
     clearTimeout(timerRef.current)
@@ -479,6 +480,141 @@ function ConnectButton({ onClick, label }: { onClick: () => void; label: string 
   )
 }
 
+// ─── Hamburger button (mobile only) ──────────────────────────────────────────
+
+function HamburgerButton({ isOpen, onClick }: { isOpen: boolean; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      aria-label={isOpen ? 'Close menu' : 'Open menu'}
+      className={cn(
+        'flex md:hidden items-center justify-center p-2 rounded-[var(--radius-lg,8px)] shrink-0',
+        'hover:bg-[var(--wm-bg-02)] active:bg-[var(--wm-bg-03)]',
+        'transition-colors duration-150 cursor-pointer outline-none',
+      )}
+    >
+      {isOpen ? (
+        <CloseLine className="size-6 text-[var(--wm-text-01)]" />
+      ) : (
+        <MenuLine className="size-6 text-[var(--wm-text-01)]" />
+      )}
+    </button>
+  )
+}
+
+// ─── Mobile Drawer (rendered via createPortal to escape page-fade-in) ────────
+
+function MobileDrawer({
+  isOpen,
+  onClose,
+  navItems,
+  isActive,
+  t,
+  onConnectClick,
+  isConnected,
+}: {
+  isOpen: boolean
+  onClose: () => void
+  navItems: NavItemConfig[]
+  isActive: (href: string) => boolean
+  t: (key: TranslationKey) => string
+  onConnectClick: () => void
+  isConnected: boolean
+}) {
+  // Lock body scroll when open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => { document.body.style.overflow = '' }
+  }, [isOpen])
+
+  if (!isOpen) return null
+
+  return createPortal(
+    <div className="fixed inset-0 z-50 md:hidden">
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+        onClick={onClose}
+      />
+
+      {/* Drawer panel — slide from left */}
+      <div
+        className={cn(
+          'absolute top-0 left-0 bottom-0 w-[280px]',
+          'bg-[var(--wm-bg-01)] border-r border-[var(--wm-border-01)]',
+          'flex flex-col',
+          'animate-in slide-in-from-left duration-250',
+        )}
+      >
+        {/* Drawer header */}
+        <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--wm-border-01)]">
+          <Link to="/home" onClick={onClose} className="flex items-center shrink-0">
+            <img src="/logo.svg" alt="Whales Market" className="h-8 w-auto" />
+          </Link>
+          <button
+            onClick={onClose}
+            aria-label="Close menu"
+            className={cn(
+              'flex items-center justify-center p-2 rounded-full shrink-0',
+              'hover:bg-[var(--wm-bg-02)]',
+              'transition-colors duration-150 cursor-pointer outline-none',
+            )}
+          >
+            <CloseLine className="size-5 text-[var(--wm-text-02)]" />
+          </button>
+        </div>
+
+        {/* Nav links */}
+        <nav className="flex flex-col py-2" aria-label="Mobile navigation">
+          {navItems.map((item) => {
+            const active = isActive(item.href)
+            return (
+              <Link
+                key={item.href}
+                to={item.href}
+                onClick={onClose}
+                className={cn(
+                  'flex items-center gap-3 px-5 py-3.5',
+                  'text-label-md transition-colors duration-150',
+                  active
+                    ? 'text-[var(--wm-text-green)] bg-[var(--wm-bg-02)]'
+                    : 'text-[var(--wm-text-01)] hover:bg-[var(--wm-bg-02)]',
+                )}
+              >
+                {t(item.labelKey)}
+              </Link>
+            )
+          })}
+        </nav>
+
+        {/* Bottom actions */}
+        <div className="mt-auto px-5 py-4 border-t border-[var(--wm-border-01)]">
+          {!isConnected && (
+            <button
+              onClick={() => { onConnectClick(); onClose() }}
+              className={cn(
+                'w-full flex items-center justify-center',
+                'h-10 px-4 py-2',
+                'bg-[var(--wm-bg-secondary)] text-[var(--wm-text-inv)]',
+                'rounded-[var(--radius-lg,8px)]',
+                'text-sm font-medium',
+                'transition-colors duration-150 cursor-pointer outline-none',
+              )}
+            >
+              {t('nav.connect')}
+            </button>
+          )}
+        </div>
+      </div>
+    </div>,
+    document.body,
+  )
+}
+
 // ─── Navbar ───────────────────────────────────────────────────────────────────
 
 export default function Navbar() {
@@ -493,6 +629,9 @@ export default function Navbar() {
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  // Mobile drawer state
+  const [drawerOpen, setDrawerOpen] = useState(false)
 
   // Wallet connection state — persisted in localStorage
   const [isConnected,  setIsConnected]  = useState(() => localStorage.getItem('wm_connected') === '1')
@@ -591,15 +730,19 @@ export default function Navbar() {
           transition: 'background-color 300ms ease, backdrop-filter 300ms ease, -webkit-backdrop-filter 300ms ease',
         }}
       >
-        {/* Inner container — max-w-[1440px], px-[48px], py-[12px] */}
-        <div className="flex items-center w-full max-w-[1440px] mx-auto px-12 py-3">
+        {/* Inner container — max-w-[1440px], px-4 mobile / px-12 desktop, py-3 */}
+        <div className="flex items-center w-full max-w-[1440px] mx-auto px-4 md:px-12 py-3">
 
-          {/* ── Left: logo + top-menu ──────────────────────────────── */}
+          {/* ── Left: hamburger (mobile) + logo + nav (desktop) ────── */}
           <div className="flex flex-1 items-center gap-2 min-w-0">
+
+            {/* Hamburger — mobile only */}
+            <HamburgerButton isOpen={drawerOpen} onClick={() => setDrawerOpen((v) => !v)} />
 
             <Logo />
 
-            <nav className="flex items-center" aria-label="Main navigation">
+            {/* Desktop nav — hidden on mobile */}
+            <nav className="hidden md:flex items-center" aria-label="Main navigation">
               {NAV_ITEMS.map((item) => (
                 <NavItem
                   key={item.href}
@@ -612,12 +755,12 @@ export default function Navbar() {
           </div>
 
           {/* ── Right: wallet + utility ────────────────────────────── */}
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-1.5 md:gap-3 shrink-0">
             {isConnected ? (
               /* ── Connected state ─────────────────────────────────── */
               <>
                 <ChainSelector chain={selectedChain} onSelect={handleChainSelect} />
-                <FeeBlock />
+                <span className="hidden md:flex"><FeeBlock /></span>
                 <BalanceBlock />
 
                 {/* Avatar + user menu dropdown */}
@@ -643,14 +786,16 @@ export default function Navbar() {
                   )}
                 </div>
 
-                <VerticalDivider />
-                <RoundIconBtn
-                  label="Help"
-                  onClick={() => window.open('https://whales.market/blog/', '_blank', 'noopener,noreferrer')}
-                  icon={<QuestionLine className="size-full text-[var(--wm-text-02)]" />}
-                />
-                {/* Language selector — connected state */}
-                <div ref={langMenuRef} className="relative shrink-0">
+                <span className="hidden md:flex items-center"><VerticalDivider /></span>
+                <span className="hidden md:flex">
+                  <RoundIconBtn
+                    label="Help"
+                    onClick={() => window.open('https://whales.market/blog/', '_blank', 'noopener,noreferrer')}
+                    icon={<QuestionLine className="size-full text-[var(--wm-text-02)]" />}
+                  />
+                </span>
+                {/* Language selector — connected state, hidden on mobile */}
+                <div ref={langMenuRef} className="relative shrink-0 hidden md:flex">
                   <RoundIconBtn
                     label="Language"
                     onClick={() => setShowLang((v) => !v)}
@@ -675,9 +820,11 @@ export default function Navbar() {
             ) : (
               /* ── Disconnected state (default) ────────────────────── */
               <>
-                <ConnectButton onClick={() => setShowModal(true)} label={t('nav.connect')} />
-                {/* Language selector — disconnected state */}
-                <div ref={langMenuRef} className="relative shrink-0">
+                <span className="hidden md:flex">
+                  <ConnectButton onClick={() => setShowModal(true)} label={t('nav.connect')} />
+                </span>
+                {/* Language selector — disconnected state, hidden on mobile */}
+                <div ref={langMenuRef} className="relative shrink-0 hidden md:flex">
                   <RoundIconBtn
                     label="Language"
                     onClick={() => setShowLang((v) => !v)}
@@ -704,6 +851,17 @@ export default function Navbar() {
 
         </div>
       </header>
+
+      {/* ── Mobile Drawer ──────────────────────────────────────────── */}
+      <MobileDrawer
+        isOpen={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        navItems={NAV_ITEMS}
+        isActive={isActive}
+        t={t}
+        onConnectClick={() => setShowModal(true)}
+        isConnected={isConnected}
+      />
 
       {/* ── Connect Wallet Modal ───────────────────────────────────── */}
       {showModal && (

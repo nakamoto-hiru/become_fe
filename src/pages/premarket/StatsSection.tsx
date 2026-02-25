@@ -200,15 +200,6 @@ function StatDivider() {
   )
 }
 
-// ─── Data ──────────────────────────────────────────────────────────────────────
-
-const STAT_KEYS = [
-  { raw: '330M+', labelKey: 'stats.volume'     as const },
-  { raw: '200K+', labelKey: 'stats.users'      as const },
-  { raw: '251',   labelKey: 'stats.settled'     as const },
-  { raw: '24',    labelKey: 'stats.blockchain'  as const },
-]
-
 // ─── Section ───────────────────────────────────────────────────────────────────
 
 const StatsSection = () => {
@@ -217,11 +208,11 @@ const StatsSection = () => {
 
   return (
     <section className="border-t border-b border-wm-border-02">
-      <div className="max-w-[1440px] mx-auto px-12 py-16">
-        <div className="flex items-start justify-between">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-12 py-8 md:py-16">
+        <div className="flex flex-col md:flex-row items-start justify-between gap-6 md:gap-0">
           {stats.map(({ raw, labelKey }, i) => (
-            <div key={labelKey} className="flex items-center flex-1">
-              {i > 0 && <StatDivider />}
+            <div key={labelKey} className="flex items-center flex-1 w-full md:w-auto">
+              {i > 0 && <div className="hidden md:flex"><StatDivider /></div>}
               {/* key={raw} forces remount when value changes → slot animation replays */}
               <StatItem key={raw} raw={raw} label={t(labelKey)} colDelay={i * 90} />
             </div>

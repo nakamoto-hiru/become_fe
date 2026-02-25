@@ -3,20 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeftLine } from '@mingcute/react'
 import { liveMarkets, upcomingMarkets } from '@/mock-data/premarket'
 
-/* ── Stat card ────────────────────────────────────────────────────────────── */
-const StatCard = ({ label, value, sub }: { label: string; value: string; sub?: string }) => (
-  <div className="flex flex-col gap-1">
-    <p className="text-body-xs text-wm-text-03">{label}</p>
-    <p
-      className="text-label-md text-wm-text-01"
-      style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}
-    >
-      {value}
-    </p>
-    {sub && <p className="text-body-xs text-wm-text-green">{sub}</p>}
-  </div>
-)
-
 /* ── Order row ────────────────────────────────────────────────────────────── */
 const OrderRow = ({
   price,

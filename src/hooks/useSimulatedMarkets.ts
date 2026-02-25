@@ -36,8 +36,6 @@ function cloneUpcoming(items: UpcomingMarketItem[]): UpcomingMarketItem[] {
 export function useSimulatedMarkets() {
   // Keep initial values as refs so we can compute % change from original
   const initialLiveRef = useRef(cloneLive(initialLive))
-  const initialUpcomingRef = useRef(cloneUpcoming(initialUpcoming))
-
   const [liveData, setLiveData] = useState<LiveMarketItem[]>(() => cloneLive(initialLive))
   const [upcomingData, setUpcomingData] = useState<UpcomingMarketItem[]>(() => cloneUpcoming(initialUpcoming))
 

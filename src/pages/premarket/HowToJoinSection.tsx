@@ -128,18 +128,18 @@ const HowToJoinSection = () => {
         />
       </div>
 
-      {/* Container — px-48 py-24  flex-col gap-64 items-center */}
-      <div className="relative max-w-[1440px] mx-auto px-12 py-12 flex flex-col gap-16 items-center">
+      {/* Container */}
+      <div className="relative max-w-[1440px] mx-auto px-4 md:px-12 py-8 md:py-12 flex flex-col gap-8 md:gap-16 items-center">
 
-        {/* block-title — flex-col gap-32 items-center max-w-720 */}
-        <div className="flex flex-col gap-8 items-center max-w-[720px] w-full">
+        {/* block-title */}
+        <div className="flex flex-col gap-6 md:gap-8 items-center max-w-[720px] w-full">
 
-          {/* Text block — flex-col gap-16 text-center */}
+          {/* Text block */}
           <div className="flex flex-col gap-4 text-center w-full">
-            <h2 className="text-display-lg text-wm-text-01">
+            <h2 className="text-display-sm md:text-display-md lg:text-display-lg text-wm-text-01">
               {t('htj.title')}
             </h2>
-            <p className="text-body-lg text-wm-text-02">
+            <p className="text-body-sm md:text-body-lg text-wm-text-02">
               {t('htj.desc')}
             </p>
           </div>
@@ -197,25 +197,25 @@ const HowToJoinSection = () => {
           >
 
             {/* ── Buy panel ── */}
-            <div className="flex items-center" style={{ width: '50%' }}>
+            <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-4 lg:gap-0" style={{ width: '50%' }}>
               {buySteps.map((step, i) => (
                 <Fragment key={step.number}>
                   <div className="flex flex-1 self-stretch">
                     <StepCard step={step} blur="16px" />
                   </div>
-                  {i < buySteps.length - 1 && <StepArrow />}
+                  {i < buySteps.length - 1 && <div className="hidden lg:flex"><StepArrow /></div>}
                 </Fragment>
               ))}
             </div>
 
             {/* ── Sell panel ── */}
-            <div className="flex items-center" style={{ width: '50%' }}>
+            <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-4 lg:gap-0" style={{ width: '50%' }}>
               {sellSteps.map((step, i) => (
                 <Fragment key={step.number}>
                   <div className="flex flex-1 self-stretch">
                     <StepCard step={step} blur="16px" />
                   </div>
-                  {i < sellSteps.length - 1 && <StepArrow />}
+                  {i < sellSteps.length - 1 && <div className="hidden lg:flex"><StepArrow /></div>}
                 </Fragment>
               ))}
             </div>

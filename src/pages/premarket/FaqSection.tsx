@@ -16,7 +16,7 @@ const FaqRow = ({
 }) => (
   /* Figma faq-item: border-t, p-[24px] all sides */
   <div
-    className="cursor-pointer select-none border-t border-wm-border-02 p-6 flex flex-col hover:bg-wm-bg-02/60 transition-all duration-100 ease-[cubic-bezier(0.4,0,0.2,1)]"
+    className="cursor-pointer select-none border-t border-wm-border-02 p-4 md:p-6 flex flex-col hover:bg-wm-bg-02/60 transition-all duration-100 ease-[cubic-bezier(0.4,0,0.2,1)]"
     onClick={onToggle}
   >
     {/* Question row */}
@@ -72,15 +72,15 @@ const FaqSection = () => {
 
   return (
     <section className="bg-wm-bg-01">
-      <div className="max-w-[1440px] mx-auto p-12">
-        <div className="py-6 flex flex-col gap-16">
+      <div className="max-w-[1440px] mx-auto px-4 py-8 md:p-12">
+        <div className="py-4 md:py-6 flex flex-col gap-8 md:gap-16">
 
           {/* Title block */}
           <div className="text-center max-w-[720px] mx-auto flex flex-col gap-4">
-            <h2 className="text-display-lg text-wm-text-01">
+            <h2 className="text-display-sm md:text-display-md lg:text-display-lg text-wm-text-01">
               {t('faq.title')}
             </h2>
-            <p className="text-body-lg text-wm-text-02">
+            <p className="text-body-sm md:text-body-lg text-wm-text-02">
               {t('faq.desc')}
             </p>
           </div>

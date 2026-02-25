@@ -229,6 +229,7 @@
 
   /* ── Background / Overlay ──────────────────────────────────────── */
   --wm-bg-overlay:     var(--p-overlay-5);   /* #ffffff0d */
+  --wm-overlay-3:      var(--p-overlay-3);   /* #ffffff08 */
   --wm-overlay-5:      var(--p-overlay-5);   /* #ffffff0d */
   --wm-overlay-10:     var(--p-overlay-10);  /* #ffffff1a */
   --wm-overlay-20:     var(--p-overlay-20);  /* #ffffff33 */
@@ -659,7 +660,30 @@ body {
   letter-spacing: -1px;
 }
 
+@utility text-display-md {
+  /* Responsive: 36/44 Medium ls:-0.5 — between display-lg and heading-md */
+  font-size: 36px;
+  line-height: 44px;
+  font-weight: var(--wm-fw-medium);
+  letter-spacing: -0.5px;
+}
+
+@utility text-display-sm {
+  /* Responsive: 28/36 Medium ls:-0.25 — for mobile hero titles */
+  font-size: 28px;
+  line-height: 36px;
+  font-weight: var(--wm-fw-medium);
+  letter-spacing: -0.25px;
+}
+
 /* ── Heading ──────────────────────────────────────────────────────── */
+@utility text-heading-md {
+  /* Figma: heading/text-heading-md — 24/32 Medium ✓ confirmed */
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: var(--wm-fw-medium);
+}
+
 @utility text-heading-sm {
   /* Figma: heading/text-heading-sm — 20/28 Medium ✓ confirmed */
   font-size: 20px;

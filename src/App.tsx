@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import AppLayout              from '@/layouts/AppLayout'
 import PremarketPage          from '@/pages/premarket'
+import HomePage               from '@/pages/home'
 import UnderDevelopmentPage   from '@/pages/UnderDevelopmentPage'
 import ButtonDemo             from '@/pages/ButtonDemo'
 import InputDemo              from '@/pages/InputDemo'
@@ -15,7 +16,7 @@ function App() {
         <Route element={<AppLayout />}>
           {/* ── Main pages ────────────────────────────────────────────── */}
           <Route path="/"                    element={<PremarketPage />} />
-          <Route path="/home"                element={<UnderDevelopmentPage />} />
+          <Route path="/home"                element={<HomePage />} />
           <Route path="/premarket/:slug"     element={<UnderDevelopmentPage />} />
 
           {/* ── Navbar routes — placeholder until built ───────────────── */}

@@ -36,14 +36,6 @@ const ASSETS = {
   ellipseGlow:    'https://www.figma.com/api/mcp/asset/0cda4b8b-af18-42e8-8f68-29250f561987',
 } as const
 
-// ─── Dot Grid (separated layer — future: parallax / opacity pulse) ─────────────
-
-function DotGrid() {
-  return (
-    <div className="dot-grid absolute inset-0 opacity-40 pointer-events-none" aria-hidden="true" />
-  )
-}
-
 // ─── Decorative Coins (separated layer — future: float keyframe animation) ────
 // Each coin is an independent component so keyframes can be applied individually.
 
@@ -284,11 +276,7 @@ const HeroSection = () => {
   return (
     <section
       className="relative w-full overflow-hidden bg-[var(--wm-bg-01)]"
-      style={{ minHeight: '656px' }}
     >
-      {/* ── Dot grid overlay (separated layer) ── */}
-      {/* <DotGrid /> */}
-
       {/* ── Radial glow ── */}
       <div
         className="absolute right-0 top-0 bottom-0 w-1/2 pointer-events-none"
@@ -308,16 +296,16 @@ const HeroSection = () => {
 
       {/* ── Content ── */}
       <div
-        className="relative max-w-[1440px] mx-auto px-12 flex items-center gap-12"
-        style={{ minHeight: '656px' }}
+        className="relative max-w-[1440px] mx-auto px-4 md:px-8 lg:px-12 py-8 md:py-0 flex flex-col lg:flex-row items-center gap-8 lg:gap-12"
+        style={{ minHeight: 'clamp(400px, 60vh, 656px)' }}
       >
         {/* Left — headline + description + CTA */}
-        <div className="flex-1 flex flex-col gap-16 min-w-0 pr-16">
-          <div className="flex flex-col gap-6">
-            <h1 className="text-display-lg text-[var(--wm-text-01)]">
+        <div className="flex-1 flex flex-col gap-8 lg:gap-16 min-w-0 lg:pr-16 text-center lg:text-left items-center lg:items-start">
+          <div className="flex flex-col gap-4 md:gap-6">
+            <h1 className="text-display-sm md:text-display-md lg:text-display-lg text-[var(--wm-text-01)]">
               {t('hero.title')}
             </h1>
-            <p className="text-body-lg text-[var(--wm-text-02)] max-w-[672px]">
+            <p className="text-body-sm md:text-body-md lg:text-body-lg text-[var(--wm-text-02)] max-w-[672px]">
               {t('hero.description')}
             </p>
           </div>
@@ -325,8 +313,10 @@ const HeroSection = () => {
           <GetStartedButton label={t('hero.cta')} />
         </div>
 
-        {/* Right — decorative illustration + play */}
-        <HeroRightPanel />
+        {/* Right — decorative illustration + play — hidden on mobile */}
+        <div className="hidden md:block">
+          <HeroRightPanel />
+        </div>
       </div>
     </section>
   )
