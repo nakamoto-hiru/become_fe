@@ -7,11 +7,15 @@ import ButtonDemo             from '@/pages/ButtonDemo'
 import InputDemo              from '@/pages/InputDemo'
 import CheckboxDemo           from '@/pages/CheckboxDemo'
 import NotFoundPage           from '@/pages/NotFoundPage'
+import AiShowcasePage         from '@/pages/AiShowcasePage'
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Standalone pages — outside AppLayout */}
+        <Route path="/ai-showcase" element={<AiShowcasePage />} />
+
         {/* All pages share the global Navbar via AppLayout */}
         <Route element={<AppLayout />}>
           {/* ── Main pages ────────────────────────────────────────────── */}

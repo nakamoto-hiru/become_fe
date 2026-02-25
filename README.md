@@ -67,7 +67,7 @@ ai-showcase/        # AI prompt screenshots used during build
 
 | Page | Route | Status | Description |
 |---|---|---|---|
-| Home | `/` | Done | Market listing dashboard — top metrics bar (24h vol, Fear & Greed gauge, Altcoin season, countdown), Live/Upcoming/Ended market tabs, token table with sparkline charts, recent activities feed, bottom stats bar |
+| Home | `/` | Done | Market listing dashboard — top metrics bar (24h vol, Fear & Greed animated gauge, Altcoin season index, countdown timer), Live/Upcoming/Ended market tabs with badge counts, sortable token table with sparkline SVG charts, recent activities feed with live trade simulation (slide-in animation, relative time), bottom stats bar with radar-pulse LIVE DATA indicator |
 | Premarket Landing | `/premarket` | Done | Anchor page — hero section with CTA + decorative trade panel + video modal, slot-machine stats animation, live/upcoming market tables with real-time price simulation, how-to-join buy/sell steps with video background, 7-item FAQ accordion, footer |
 | Market Detail | `/premarket/:slug` | Placeholder | Under Development page with whale mascot + CTA back to Premarket |
 | Dashboard | `/dashboard` | Placeholder | Under Development |
@@ -77,11 +77,11 @@ ai-showcase/        # AI prompt screenshots used during build
 ### Completed Features
 
 - **Navbar** — Sticky with glassmorphism on scroll, 4 dropdowns (Chain, Language, Earn, Resources), wallet connect modal with 6 networks x 5 wallets, user menu, hamburger mobile drawer
-- **Real-time Simulation** — Price random-walk, volume ticks, watcher count updates via custom hooks (`useSimulatedStats`, `useSimulatedMarkets`)
-- **i18n** — 15 languages fully translated (EN, VI, ZH-CN, ZH-TW, ES, RU, FR, DE, JA, KO, PT, TR, ID, TH, AR, UK)
+- **Real-time Simulation** — Price random-walk, volume ticks, watcher count updates via custom hooks (`useSimulatedStats`, `useSimulatedMarkets`, `useSimulatedHomeMarkets`); live trade generator in RecentActivities with weighted random intervals
+- **i18n** — 15 languages fully translated (EN, VI, ZH-CN, ZH-TW, ES, RU, FR, DE, JA, KO, PT, TR, ID, TH, AR)
 - **Design System** — 100+ CSS tokens, full typography scale (display-lg to body-xs), semantic color tokens
 - **Responsive** — Mobile/tablet/desktop breakpoints for all Premarket sections + Navbar hamburger menu
-- **Animations** — Slot-machine digit reels, coin float keyframes, page transitions, accordion grid-rows, flash green/red on value changes
+- **Animations** — Slot-machine digit reels, coin float keyframes, page transitions, accordion grid-rows, flash green/red on value changes, skeleton shimmer, recent trade slide-in (grid 0fr→1fr), radar pulse LIVE DATA icon
 
 ---
 
@@ -93,6 +93,17 @@ Highlights include:
 - Initial project setup prompt
 - Figma → component conversion workflow
 - Iterative feedback loops with AI
+
+---
+
+## Competition Schedule
+
+| Day | Focus | Deliverable |
+|---|---|---|
+| Day 1 | Setup environment + GitHub + AI tools | Project runs + repo created + link shared |
+| Day 2 | Build pages + routing + mock data | Main pages running + push to GitHub |
+| Day 3 | Polish + FE logic + responsive + prep demo | App functional + final push to GitHub |
+| Day 4 | **Presentation + Q&A** | Live demo to judges |
 
 ---
 

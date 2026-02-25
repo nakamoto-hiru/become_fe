@@ -96,8 +96,9 @@ const TokenImage = ({
 /* ── See More button ─────────────────────────────────────────────────────── */
 // Figma: bg-overlay, pl-12 pr-6 py-6, rounded-6, gap-4
 //        trailing icon wrapped in icon-slot (p-[2px])
-const SeeMoreBtn = ({ label }: { label: string }) => (
+const SeeMoreBtn = ({ label, onClick }: { label: string; onClick?: () => void }) => (
   <button
+    onClick={onClick}
     className="flex items-center gap-1 overflow-clip pl-3 pr-1.5 py-1.5 rounded-[6px] bg-wm-overlay-5 transition-opacity hover:bg-wm-overlay-10 shrink-0 cursor-pointer"
   >
     <span
@@ -136,7 +137,7 @@ const LiveCard = ({
       >
         {t('market.live')}
       </span>
-      <SeeMoreBtn label={t('market.seeMore')} />
+      <SeeMoreBtn label={t('market.seeMore')} onClick={() => navigate('/?tab=live')} />
     </div>
 
     {/* Body */}
@@ -255,7 +256,7 @@ const UpcomingCard = ({
       >
         {t('market.upcoming')}
       </span>
-      <SeeMoreBtn label={t('market.seeMore')} />
+      <SeeMoreBtn label={t('market.seeMore')} onClick={() => navigate('/?tab=upcoming')} />
     </div>
 
     {/* Body */}

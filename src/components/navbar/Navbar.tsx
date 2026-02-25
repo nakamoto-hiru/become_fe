@@ -728,7 +728,7 @@ export default function Navbar() {
           'border-b border-[var(--wm-border-01)]',
         )}
         style={{
-          backgroundColor: scrolled ? 'rgba(0, 0, 0, 0.8)' : 'var(--wm-bg-01)',
+          backgroundColor: scrolled ? 'rgba(0, 0, 0, 0.4)' : 'var(--wm-bg-01)',
           backdropFilter: scrolled ? 'blur(16px)' : 'none',
           WebkitBackdropFilter: scrolled ? 'blur(16px)' : 'none',
           transition: 'background-color 300ms ease, backdrop-filter 300ms ease, -webkit-backdrop-filter 300ms ease',

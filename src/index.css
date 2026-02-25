@@ -500,6 +500,7 @@
   --color-wm-bg-info-20:           var(--wm-bg-info-muted-20);
   --color-wm-bg-info-10:           var(--wm-bg-info-muted-10);
   --color-wm-bg-info-5:            var(--wm-bg-info-muted-5);
+  --color-wm-overlay-3:            var(--wm-overlay-3);
   --color-wm-overlay-5:            var(--wm-overlay-5);
   --color-wm-overlay-10:           var(--wm-overlay-10);
   --color-wm-overlay-20:           var(--wm-overlay-20);
@@ -677,6 +678,13 @@ body {
 }
 
 /* ── Heading ──────────────────────────────────────────────────────── */
+@utility text-heading-lg {
+  /* Figma: heading/text-heading-lg — 28/36 Medium ✓ confirmed */
+  font-size: 28px;
+  line-height: 36px;
+  font-weight: var(--wm-fw-medium);
+}
+
 @utility text-heading-md {
   /* Figma: heading/text-heading-md — 24/32 Medium ✓ confirmed */
   font-size: 24px;
@@ -727,6 +735,13 @@ body {
   font-weight: var(--wm-fw-medium);
 }
 
+@utility text-label-2xs {
+  /* Figma: label/text-label-2xs — 10/12 Medium ✓ confirmed */
+  font-size: 10px;
+  line-height: 12px;
+  font-weight: var(--wm-fw-medium);
+}
+
 /* ── Body (regular weight) ────────────────────────────────────────── */
 @utility text-body-lg {
   /* Figma: body/text-body-lg — 18/28 Regular ✓ confirmed */
@@ -772,6 +787,54 @@ body {
 .btn-pop:active:not(:disabled) {
   animation: button-pop 0.25s ease-out;
   transform: scale(0.97);
+}
+
+/* ── Skeleton loading shimmer ──────────────────────────────────────── */
+@keyframes skeleton-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.skeleton-loading {
+  background: linear-gradient(
+    90deg,
+    var(--p-neutral-900) 0%,
+    var(--p-neutral-800) 25%,
+    var(--p-neutral-700) 50%,
+    var(--p-neutral-800) 75%,
+    var(--p-neutral-900) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 2s ease-in-out infinite;
+}
+
+/* ── Recent activity row slide-open animation ─────────────────────── */
+/* Row expands from 0 → full height, pushing siblings down naturally. */
+@keyframes recent-row-slide {
+  0% {
+    grid-template-rows: 0fr;
+    opacity: 0;
+  }
+  50% {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    background-color: var(--wm-bg-primary-muted-20);
+  }
+  100% {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    background-color: transparent;
+  }
+}
+
+.recent-row-enter {
+  display: grid;
+  animation: recent-row-slide 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.recent-row-enter > .recent-row-inner {
+  overflow: hidden;
+  min-height: 0;
 }
 
 /* ── Mascot float animation ────────────────────────────────────────── */
@@ -853,10 +916,13 @@ body {
   to   { transform: rotateX(0deg);  }
 }
 
-/* ── Page transition — fade-in + slight rise on route change ────────────── */
+/* ── Page transition — fade-in on route change ─────────────────────────── */
+/* NOTE: No transform here! translateY created a stacking context that broke
+   position:fixed/sticky for descendants and caused a visible 6px content
+   shift on page refresh. Opacity-only fade avoids all side-effects.        */
 @keyframes page-fade-in {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0px); }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 .page-fade-in {

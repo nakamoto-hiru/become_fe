@@ -8,11 +8,12 @@ import Navbar from '@/components/navbar/Navbar'
 import { ToastProvider } from '@/components/Toast'
 import { LanguageProvider } from '@/contexts/LanguageContext'
 
-// Wraps page content — remounts on each navigation via `key` → triggers CSS fade-in
+// Wraps page content — remounts on path change via `key` → triggers CSS fade-in
+// Uses pathname (not location.key) so search-param changes (e.g. ?tab=) don't remount
 function PageTransition() {
   const location = useLocation()
   return (
-    <div key={location.key} className="page-fade-in flex-1 flex flex-col">
+    <div key={location.pathname} className="page-fade-in flex-1 flex flex-col">
       <Outlet />
     </div>
   )

@@ -27,10 +27,12 @@ import { cn } from '@/lib/utils'
 export type TooltipArrowSide = 'top' | 'bottom' | 'left' | 'right'
 
 export interface TooltipProps {
-  content:    string
+  content:    React.ReactNode
   visible:    boolean
   arrowSide?: TooltipArrowSide
   className?: string
+  /** Allow multiline / rich content — removes whitespace-nowrap, adds max-width */
+  multiline?: boolean
 }
 
 // ─── Arrow SVG ───────────────────────────────────────────────────────────────
@@ -56,10 +58,14 @@ function TooltipContent({
   content,
   arrowSide,
   extraCls,
+  multiline,
+  hideArrow,
 }: {
-  content:  string
+  content:  React.ReactNode
   arrowSide: TooltipArrowSide
   extraCls?: string
+  multiline?: boolean
+  hideArrow?: boolean
 }) {
   // flex direction so arrow is on the correct side
   const layoutCls: Record<TooltipArrowSide, string> = {
@@ -87,13 +93,13 @@ function TooltipContent({
     >
       <div className={cn(
         'bg-[var(--wm-bg-03)] rounded-[var(--radius-lg,8px)]',
-        'px-3 py-2 whitespace-nowrap',
+        multiline ? 'px-3 py-2 max-w-[280px]' : 'px-3 py-2 whitespace-nowrap',
         'shadow-[0_0_8px_rgba(0,0,0,0.1)]',
         'text-xs leading-4 font-normal text-[var(--wm-text-01)]',
       )}>
         {content}
       </div>
-      <Arrow side={arrowSide} />
+      {!hideArrow && <Arrow side={arrowSide} />}
     </div>
   )
 }
@@ -101,7 +107,7 @@ function TooltipContent({
 // ─── Tooltip (absolute, no portal) ───────────────────────────────────────────
 // Use this only when the parent has NO overflow:hidden ancestor
 
-export function Tooltip({ content, visible, arrowSide = 'bottom', className }: TooltipProps) {
+export function Tooltip({ content, visible, arrowSide = 'bottom', className, multiline }: TooltipProps) {
   if (!visible) return null
 
   const posCls: Record<TooltipArrowSide, string> = {
@@ -113,7 +119,7 @@ export function Tooltip({ content, visible, arrowSide = 'bottom', className }: T
 
   return (
     <div className={cn('absolute z-[200]', posCls[arrowSide], className)}>
-      <TooltipContent content={content} arrowSide={arrowSide} />
+      <TooltipContent content={content} arrowSide={arrowSide} multiline={multiline} hideArrow />
     </div>
   )
 }
@@ -161,17 +167,57 @@ function getFixedStyle(rect: DOMRect, arrowSide: TooltipArrowSide): CSSPropertie
 }
 
 export interface TooltipPortalProps {
-  content:    string
+  content:    React.ReactNode
   visible:    boolean
   anchorRef:  RefObject<HTMLElement | null>
   arrowSide?: TooltipArrowSide
+  multiline?: boolean
 }
+
+// ─── TooltipCursor (follows mouse position via portal) ──────────────────────
+// Renders tooltip at given (x,y) client coords — appears above cursor by default
+
+export interface TooltipCursorProps {
+  content:    React.ReactNode
+  visible:    boolean
+  x:          number
+  y:          number
+  arrowSide?: TooltipArrowSide
+  multiline?: boolean
+}
+
+export function TooltipCursor({
+  content,
+  visible,
+  x,
+  y,
+  arrowSide = 'bottom',
+  multiline,
+}: TooltipCursorProps) {
+  if (!visible) return null
+
+  const style: CSSProperties =
+    arrowSide === 'bottom'
+      ? { position: 'fixed', left: x, bottom: window.innerHeight - y + 10, transform: 'translateX(-50%)', zIndex: 9999, pointerEvents: 'none' as const }
+      : { position: 'fixed', left: x, top: y + 10, transform: 'translateX(-50%)', zIndex: 9999, pointerEvents: 'none' as const }
+
+  return createPortal(
+    <div style={style}>
+      <TooltipContent content={content} arrowSide={arrowSide} multiline={multiline} hideArrow />
+    </div>,
+    document.body,
+  )
+}
+
+// ─── TooltipPortal (portal into body, escapes overflow:hidden) ───────────────
+// Use this when any ancestor has overflow:hidden (e.g. a modal, dropdown shell)
 
 export function TooltipPortal({
   content,
   visible,
   anchorRef,
   arrowSide = 'bottom',
+  multiline,
 }: TooltipPortalProps) {
   const [style, setStyle] = useState<CSSProperties>({})
 
@@ -186,7 +232,7 @@ export function TooltipPortal({
 
   return createPortal(
     <div style={style}>
-      <TooltipContent content={content} arrowSide={arrowSide} />
+      <TooltipContent content={content} arrowSide={arrowSide} multiline={multiline} hideArrow />
     </div>,
     document.body,
   )

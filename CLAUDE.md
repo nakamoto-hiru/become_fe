@@ -196,7 +196,7 @@ npm run build    # Production build
 
 ## Current Status (updated 2026-02-25)
 
-### ✅ Completed — Anchor Page (PremarketPage `/`)
+### ✅ Completed — Anchor Page (PremarketPage `/premarket`)
 6 sections fully built, animated, interactive:
 1. **HeroSection** — headline + CTA + decorative coins/trade panel + play button → video modal (uses `createPortal` to escape `page-fade-in` transform)
 2. **StatsSection** — slot-machine digit reel animation (IntersectionObserver trigger) + real-time simulation via `useSimulatedStats` hook (re-triggers animation on value change with `key={raw}`)
@@ -205,14 +205,24 @@ npm run build    # Production build
 5. **FaqSection** — 7-item accordion with `grid-template-rows` animation
 6. **Footer** — 4 link columns + brand
 
+### ✅ Completed — Home Page (`/`)
+Full market dashboard with 4 sections:
+1. **TopMetricsBar** — 24h Volume, Fear & Greed gauge (animated needle), Altcoin Season Index (progress bar), countdown timer to next event
+2. **MarketSection** (merged MarketTabs + MarketTable) — Live/Upcoming/Ended tab bar with badge counts, sortable token table with sparkline mini-charts (`MiniChart` SVG), price/volume/change columns, real-time simulation via `useSimulatedHomeMarkets`
+3. **RecentActivities** — activity feed with filter dropdown (All/Filled/Open), skeleton loading state, **live trade simulation** (random new trades slide in from top with `grid-template-rows: 0fr→1fr` animation, weighted random intervals 2-25s, relative time display)
+4. **BottomStatsBar** — LIVE DATA indicator with radar-pulse SVG animation, Total Vol, Vol 24h, external links (Docs/Dune/Link3), social buttons (X/Discord)
+
 ### ✅ Completed — Global Components
-- **Navbar** (639 lines) — sticky, glassmorphism on scroll (inline styles for backdrop-blur due to Tailwind v4 JIT issue), 4 dropdowns (Chain, Language, Earn, Resources), wallet connect modal, user menu
+- **Navbar** (639 lines) — sticky, glassmorphism on scroll (inline styles for backdrop-blur due to Tailwind v4 JIT issue), 4 dropdowns (Chain, Language, Earn, Resources), wallet connect modal, user menu, hamburger mobile drawer
 - **ConnectWalletModal** — 6 networks × 5 wallets, tab switching
 - **Button** (356 lines) — 4 variants × 5 appearances × 4 sizes, loading state
 - **Input** — 2 variants × 2 sizes, error state, icons
 - **Checkbox** — custom styled, indeterminate support
+- **Tooltip** — custom styled with arrow, dark theme
+- **Skeleton** — reusable shimmer component with opacity-40
+- **WhalesBadge** — tier badge component (Shrimp/Fish/Dolphin/Shark/Whale) with SVG icons
 - **Toast** — 6 types, auto-dismiss, action buttons
-- **i18n** — LanguageContext with 5 languages, all sections translated
+- **i18n** — LanguageContext with 15 languages (EN, VI, ZH-CN, ZH-TW, ES, RU, FR, DE, JA, KO, PT, TR, ID, TH, AR), all sections translated
 
 ### ✅ Completed — Design System
 - ~100+ CSS tokens in `src/index.css` (`@theme` block)
@@ -221,15 +231,33 @@ npm run build    # Production build
 - Zero `any` types, zero console errors
 
 ### ✅ Completed — Real-time Data Simulation
-- `src/hooks/useSimulatedStats.ts` — stats nudge every 6-9s
-- `src/hooks/useSimulatedMarkets.ts` — price random-walk ±0.5-2%, volume +20-350/tick every 4-6s, watchers +1-15 every 10-15s
+- `src/hooks/useSimulatedStats.ts` — stats nudge every 6-9s (Premarket page)
+- `src/hooks/useSimulatedMarkets.ts` — price random-walk ±0.5-2%, volume +20-350/tick every 4-6s, watchers +1-15 every 10-15s (Premarket page)
+- `src/hooks/useSimulatedHomeMarkets.ts` — price/volume simulation for Home page market table
+- **Live trade generator** (in RecentActivities) — random new trades from TOKEN_POOL, weighted intervals (15% quick 2-4s, 50% medium 6-12s, 35% long 14-25s), relative time tracking
+
+### ✅ Completed — Animations
+- Slot-machine digit reels (StatsSection)
+- Coin float keyframes (HeroSection)
+- Page fade-in transitions (AppLayout)
+- Accordion grid-rows (FaqSection)
+- Flash green/red on value changes (AnimatedValue)
+- Skeleton shimmer (`@keyframes skeleton-shimmer`)
+- Recent trade slide-in (`@keyframes recent-row-slide` — grid 0fr→1fr + green highlight fade)
+- Radar pulse on LIVE DATA icon (SVG animate elements)
 
 ### ⚠️ Known Technical Issues
 - **`page-fade-in` breaks `position: fixed`**: The CSS animation in `AppLayout.tsx > PageTransition` creates `transform: matrix(1,0,0,1,0,0)` which breaks fixed positioning for all descendants. Any modal rendered inside page content MUST use `createPortal(jsx, document.body)`. VideoModal already fixed.
 - **Tailwind v4 JIT + dynamic classes**: Arbitrary classes like `backdrop-blur-[16px]` in conditional expressions may not generate CSS. Use inline `style={{}}` as workaround.
 - **Preview tool dark screenshots**: JPEG compression makes dark UI appear all-black. Use Chrome browser or `preview_eval`/`preview_inspect` for verification.
 
-### 🔴 TODO — Day 4 Priority
-1. **Responsive mobile** — add breakpoints to: Navbar (hamburger menu), HeroSection (stack vertical), StatsSection (2×2 grid), MarketTodaySection (horizontal scroll or card layout), HowToJoinSection (stack cards vertical), FaqSection, Footer
-2. **Add 1 strategic page** — Dashboard or Market Detail page with real content (not placeholder). This satisfies the "multiple pages" Minimum requirement.
-3. **Presentation prep** — AI Showcase already has 8 annotated screenshots in `ai-showcase/`
+### 🔴 TODO — Day 3 Remaining (last coding day)
+1. **Responsive mobile for Home page** — add breakpoints to: TopMetricsBar, MarketSection (horizontal scroll or card layout), RecentActivities, BottomStatsBar
+2. **Polish & bug fixes** — cross-browser check, edge cases
+3. **Final push to GitHub** — clean commit history, full description
+
+### 📋 Day 4 — Presentation Day
+- Live demo to judges (BGK) — `npm run dev` → share screen
+- Figma side-by-side comparison for pixel accuracy
+- AI Showcase: show best prompts/conversations (screenshots in `ai-showcase/`)
+- Q&A with judges
