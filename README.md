@@ -73,6 +73,8 @@ ai-showcase/        # AI prompt screenshots used during build
 | Dashboard | `/dashboard` | Placeholder | Under Development |
 | Earn | `/earn` | Placeholder | Under Development |
 | Resources | `/resources` | Placeholder | Under Development |
+| AI Showcase | `/ai-showcase` | Done | *(Demo-only, outside product scope)* — Gallery of AI workflow screenshots with lightbox viewer, keyboard navigation, responsive grid |
+| Under Development | various | Done | *(Demo-only, outside product scope)* — Shared placeholder page with animated whale mascot, shown for routes not yet implemented |
 
 ### Completed Features
 

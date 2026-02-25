@@ -815,21 +815,15 @@ body {
     grid-template-rows: 0fr;
     opacity: 0;
   }
-  50% {
-    grid-template-rows: 1fr;
-    opacity: 1;
-    background-color: var(--wm-bg-primary-muted-20);
-  }
   100% {
     grid-template-rows: 1fr;
     opacity: 1;
-    background-color: transparent;
   }
 }
 
 .recent-row-enter {
   display: grid;
-  animation: recent-row-slide 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: recent-row-slide 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .recent-row-enter > .recent-row-inner {

@@ -116,7 +116,7 @@ const COLUMNS: { label: string; width: string; sortKey?: SortKey; align?: string
   { label: 'Price ($)', width: 'w-[168px]', sortKey: 'price', align: 'justify-end' },
   { label: 'Amount', width: 'w-[168px]', sortKey: 'amount', align: 'justify-end' },
   { label: 'Collateral', width: 'w-[168px]', sortKey: 'collateral', align: 'justify-end' },
-  { label: 'Tx.ID', width: 'w-[168px]', sortKey: 'txId', align: 'justify-end' },
+  { label: 'Tx.ID', width: 'w-[168px]', align: 'justify-end' },
 ]
 
 /* ── Time → sortable number ──────────────────────────────────────── */

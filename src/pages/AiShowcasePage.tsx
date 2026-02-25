@@ -27,71 +27,13 @@ interface ShowcaseImage {
   id: number
   src: string
   alt: string
-  caption: string
 }
 
-const SHOWCASE_IMAGES: ShowcaseImage[] = [
-  {
-    id: 0,
-    src: '/assets/ai-showcase/showcase-00.png',
-    alt: 'AI Showcase 1',
-    caption: 'Figma MCP — Extracting design tokens via get_design_context for pixel-perfect implementation',
-  },
-  {
-    id: 1,
-    src: '/assets/ai-showcase/showcase-01.png',
-    alt: 'AI Showcase 2',
-    caption: 'Iterative prompt refinement — Building the Market Table with real-time data simulation',
-  },
-  {
-    id: 2,
-    src: '/assets/ai-showcase/showcase-02.png',
-    alt: 'AI Showcase 3',
-    caption: 'Component architecture — AI-assisted design system with 100+ CSS tokens',
-  },
-  {
-    id: 3,
-    src: '/assets/ai-showcase/showcase-03.png',
-    alt: 'AI Showcase 4',
-    caption: 'Animation engineering — Slot-machine digit reel with IntersectionObserver trigger',
-  },
-  {
-    id: 4,
-    src: '/assets/ai-showcase/showcase-04.png',
-    alt: 'AI Showcase 5',
-    caption: 'State management — Multi-state Input component with Figma-exact visual states',
-  },
-  {
-    id: 5,
-    src: '/assets/ai-showcase/showcase-05.png',
-    alt: 'AI Showcase 6',
-    caption: 'Complex interactions — Dropdown, tooltip, and filter logic built iteratively',
-  },
-  {
-    id: 6,
-    src: '/assets/ai-showcase/showcase-06.png',
-    alt: 'AI Showcase 7',
-    caption: 'Layout precision — Hero section with decorative elements matching Figma spec',
-  },
-  {
-    id: 7,
-    src: '/assets/ai-showcase/showcase-07.png',
-    alt: 'AI Showcase 8',
-    caption: 'Responsive design — Glassmorphism navbar with scroll-aware backdrop blur',
-  },
-  {
-    id: 8,
-    src: '/assets/ai-showcase/showcase-08.png',
-    alt: 'AI Showcase 9',
-    caption: 'AI debugging — Solving createPortal vs CSS transform fixed-position conflict',
-  },
-  {
-    id: 9,
-    src: '/assets/ai-showcase/showcase-09.png',
-    alt: 'AI Showcase 10',
-    caption: 'Full workflow — From Figma inspection to pixel-accurate React component in one session',
-  },
-]
+const SHOWCASE_IMAGES: ShowcaseImage[] = Array.from({ length: 11 }, (_, i) => ({
+  id: i,
+  src: `/assets/ai-showcase/showcase-${String(i).padStart(2, '0')}.png`,
+  alt: `AI Showcase ${i + 1}`,
+}))
 
 // ─── Lightbox Component ──────────────────────────────────────────────────────
 
@@ -182,18 +124,15 @@ function Lightbox({
 
       {/* Image */}
       <div
-        className="flex flex-col items-center gap-4 max-w-[90vw] max-h-[85vh] px-16"
+        className="flex items-center justify-center max-w-[90vw] max-h-[85vh] px-16"
         onClick={(e) => e.stopPropagation()}
       >
         <img
           src={image.src}
           alt={image.alt}
-          className="max-w-full max-h-[75vh] object-contain rounded-lg shadow-2xl select-none"
+          className="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl select-none"
           draggable={false}
         />
-        <p className="text-body-sm text-wm-text-03 text-center max-w-2xl">
-          {image.caption}
-        </p>
       </div>
     </div>
   )
@@ -213,9 +152,8 @@ function GalleryCard({
   return (
     <button
       onClick={onClick}
-      className="group relative flex flex-col gap-3 rounded-xl overflow-hidden bg-wm-bg-02 hover:bg-wm-bg-03 transition-all duration-200 cursor-pointer text-left border border-transparent hover:border-wm-border-02"
+      className="group relative rounded-xl overflow-hidden bg-wm-bg-02 hover:bg-wm-bg-03 transition-all duration-200 cursor-pointer border border-transparent hover:border-wm-border-02"
     >
-      {/* Image container */}
       <div className="relative aspect-video overflow-hidden bg-wm-bg-03">
         {!loaded && (
           <div className="absolute inset-0 animate-pulse bg-wm-bg-03" />
@@ -238,13 +176,6 @@ function GalleryCard({
             Click to zoom
           </span>
         </div>
-      </div>
-
-      {/* Caption */}
-      <div className="px-4 pb-4">
-        <p className="text-body-xs text-wm-text-03 line-clamp-2 group-hover:text-wm-text-02 transition-colors">
-          {image.caption}
-        </p>
       </div>
     </button>
   )
