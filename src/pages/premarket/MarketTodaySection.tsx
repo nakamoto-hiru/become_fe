@@ -278,8 +278,8 @@ const UpcomingCard = ({
           style={{ fontFeatureSettings: "'lnum' 1, 'tnum' 1" }}
         >
           <div className="flex flex-[1_0_0] flex-col justify-center min-h-px min-w-px">{t('market.colMarket')}</div>
-          <div className="flex flex-[1_0_0] md:flex-none md:w-[164px] flex-col justify-center min-h-px min-w-px">{t('market.colBackers')}</div>
-          <div className="flex flex-[1_0_0] md:flex-none md:w-[164px] flex-col justify-center min-h-px min-w-px text-right">{t('market.colWatchers')}</div>
+          <div className="hidden md:flex flex-none md:w-[164px] flex-col justify-center min-h-px min-w-px">{t('market.colBackers')}</div>
+          <div className="flex flex-none w-[80px] md:w-[164px] flex-col justify-center min-h-px min-w-px text-right">{t('market.colWatchers')}</div>
         </div>
 
         {/* Token rows */}
@@ -305,16 +305,16 @@ const UpcomingCard = ({
               </div>
             </div>
 
-            {/* Backers table-cell */}
-            <div className="flex flex-row items-center self-stretch">
-              <div className="flex flex-col h-full items-start justify-center flex-[1_0_0] md:flex-none md:w-[164px] min-h-px min-w-px md:shrink-0">
+            {/* Backers table-cell — hidden on mobile */}
+            <div className="hidden md:flex flex-row items-center self-stretch">
+              <div className="flex flex-col h-full items-start justify-center flex-none md:w-[164px] min-h-px min-w-px shrink-0">
                 <BackerStack avatarUrls={item.backerAvatarUrls} extra={item.backersExtra} />
               </div>
             </div>
 
             {/* Watchers table-cell — animated */}
             <div className="flex flex-row items-center self-stretch">
-              <div className="flex flex-col h-full items-end justify-center flex-[1_0_0] md:flex-none md:w-[164px] min-h-px min-w-px md:shrink-0">
+              <div className="flex flex-col h-full items-end justify-center flex-none w-[80px] md:w-[164px] min-h-px min-w-px shrink-0">
                 <AnimatedValue
                   value={item.watchers}
                   format={(v) => v.toLocaleString('en-US')}
