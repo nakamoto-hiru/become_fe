@@ -12,10 +12,12 @@ const FlashStyles = () => (
   <style>{`
     @keyframes mkt-flash-green {
       0%   { color: var(--wm-text-green); }
+      40%  { color: var(--wm-text-green); }
       100% { color: var(--wm-text-01); }
     }
     @keyframes mkt-flash-red {
       0%   { color: var(--wm-text-danger); }
+      40%  { color: var(--wm-text-danger); }
       100% { color: var(--wm-text-01); }
     }
     @keyframes tab-slide-left {
@@ -54,7 +56,7 @@ const AnimatedValue = ({
     el.style.animation = 'none'
     // Force reflow
     void el.offsetWidth
-    el.style.animation = `mkt-flash-${dir} 800ms ease-out forwards`
+    el.style.animation = `mkt-flash-${dir} 1500ms ease-out forwards`
   }, [value])
 
   return (
