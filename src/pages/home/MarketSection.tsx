@@ -387,7 +387,7 @@ const MarketRow = ({ item, onClick }: { item: MarketListItem; onClick?: () => vo
 
       {/* Chart — Figma: flex-1, py-12 */}
       <div className="flex-1 min-w-0 py-3 shrink-0">
-        <MiniChart direction={item.chartDirection} seed={item.slug} colorOverride={item.priceChange >= 0 ? 'up' : 'down'} />
+        <MiniChart direction={item.chartDirection} seed={`${item.id}-${item.slug}-chart`} colorOverride={item.priceChange >= 0 ? 'up' : 'down'} />
       </div>
 
       {/* Last Price — Figma: w-168, gap-4, py-12 */}

@@ -145,7 +145,7 @@ export const marketListItems: MarketListItem[] = [
     impliedFdv: 48.3e3,
     settleTime: new Date(Date.now() + 18.6 * 3600_000).toISOString(),
     status: 'settling',
-    chartDirection: 'up',
+    chartDirection: 'down',
   },
   {
     id: '3',
@@ -165,7 +165,7 @@ export const marketListItems: MarketListItem[] = [
     impliedFdv: 22.2e6,
     settleTime: '2025-05-30T13:00:00Z',
     status: 'live',
-    chartDirection: 'up',
+    chartDirection: 'down',
   },
   {
     id: '4',
