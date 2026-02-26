@@ -31,7 +31,7 @@ const FlashStyles = () => (
   `}</style>
 )
 
-/* ── AnimatedValue — counting + color flash when value changes ────────────── */
+/* ── AnimatedValue — flashes green/red when value changes ─────────────────── */
 const AnimatedValue = ({
   value,
   format,
@@ -43,8 +43,6 @@ const AnimatedValue = ({
 }) => {
   const prevRef = useRef(value)
   const elRef = useRef<HTMLParagraphElement>(null)
-  const [displayValue, setDisplayValue] = useState(value)
-  const rafRef = useRef<number>(0)
 
   useEffect(() => {
     const prev = prevRef.current
@@ -52,27 +50,11 @@ const AnimatedValue = ({
 
     if (prev === value || !elRef.current) return
 
-    // Color flash
     const dir = value > prev ? 'green' : 'red'
     const el = elRef.current
     el.style.animation = 'none'
     void el.offsetWidth
     el.style.animation = `mkt-flash-${dir} 1500ms ease-out forwards`
-
-    // Counting animation — smooth interpolation over 600ms
-    cancelAnimationFrame(rafRef.current)
-    const duration = 600
-    const startTime = performance.now()
-    const animate = (now: number) => {
-      const elapsed = now - startTime
-      const t = Math.min(elapsed / duration, 1)
-      const eased = 1 - Math.pow(1 - t, 3)
-      setDisplayValue(prev + (value - prev) * eased)
-      if (t < 1) rafRef.current = requestAnimationFrame(animate)
-    }
-    rafRef.current = requestAnimationFrame(animate)
-
-    return () => cancelAnimationFrame(rafRef.current)
   }, [value])
 
   return (
@@ -80,7 +62,7 @@ const AnimatedValue = ({
       ref={elRef}
       className={`text-label-md text-wm-text-01 ${className}`}
     >
-      {format(displayValue)}
+      {format(value)}
     </p>
   )
 }
